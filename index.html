@@ -1383,7 +1383,6 @@ function expAnalyticsPDF(){
     }catch(e){toast('PDF export failed','e');}
   },800);
 }
-
 // ══════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════
@@ -1395,48 +1394,106 @@ window.addEventListener('load',()=>{
       document.getElementById('authScreen').classList.remove('hidden');
     },700);
   },2700);
-});
-// ═══════════════════════════════════════════════════════════════
-//  ME-QMS: FIREBASE & SAVE LOGIC (เพิ่มเข้าไปท้ายไฟล์)
+});// ═══════════════════════════════════════════════════════════════
+//  ME-QMS: EDIT & SAVE LOGIC (เพิ่มโดย Gemi)
 // ═══════════════════════════════════════════════════════════════
 
-// ฟังก์ชันสำหรับเปิด Modal และดึงข้อมูลมาแสดงเพื่อแก้ไข
-function editCase(caseId) {
+// 1. ฟังก์ชันเปิดหน้าต่างแก้ไขและดึงข้อมูลเดิมมาโชว์
+function openEditModal(caseId) {
     const caseData = CASES.find(c => c.id === caseId);
-    if(caseData) {
-        // นำข้อมูลไปใส่ใน Input (เช็คว่า ID เหล่านี้มีใน HTML หรือยัง)
-        if(document.getElementById('edit-id')) document.getElementById('edit-id').value = caseId;
-        if(document.getElementById('edit-title')) document.getElementById('edit-title').value = caseData.title || '';
-        if(document.getElementById('edit-status')) document.getElementById('edit-status').value = caseData.status || '';
-        
-        // แสดงหน้าต่างแก้ไข
-        const modal = document.getElementById('editModal');
-        if(modal) modal.classList.remove('hidden');
-    }
+    if (!caseData) return;
+
+    // นำข้อมูลเดิมไปใส่ในช่อง Input (ตรวจสอบ ID ให้ตรงกับ HTML ของคุณ)
+    const idField = document.getElementById('edit-id');
+    const titleField = document.getElementById('edit-title');
+    const statusField = document.getElementById('edit-status');
+
+    if (idField) idField.value = caseId;
+    if (titleField) titleField.value = caseData.title || '';
+    if (statusField) statusField.value = caseData.status || '';
+
+    // แสดง Modal แก้ไข
+    const modal = document.getElementById('editModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
-// ฟังก์ชันบันทึกข้อมูลกลับไปที่ Firebase Firestore
+// 2. ฟังก์ชันกดบันทึกเพื่อส่งข้อมูลไป Firebase
 async function handleSaveChanges() {
     const id = document.getElementById('edit-id').value;
-    const newData = {
-        title: document.getElementById('edit-title').value,
-        status: document.getElementById('edit-status').value,
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-    };
+    const title = document.getElementById('edit-title').value;
+    const status = document.getElementById('edit-status').value;
+
+    if (!id) return;
 
     try {
-        // อัปเดตข้อมูลใน Collection 'quality_reports'
-        await db.collection('quality_reports').doc(id).update(newData);
-        toast("บันทึกการเปลี่ยนแปลงในระบบ ME-QMS สำเร็จ!", "s");
+        // อัปเดตข้อมูลใน Firestore ไปที่คอลเลกชัน quality_reports
+        await db.collection('quality_reports').doc(id).update({
+            title: title,
+            status: status,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedBy: CU.email // เก็บชื่อคนแก้ไข
+        });
+
+        toast("บันทึกข้อมูลเข้าสู่ระบบ ME-QMS สำเร็จ!", "s");
         
         // ปิดหน้าต่างแก้ไข
-        document.getElementById('editModal').classList.add('hidden');
+        const modal = document.getElementById('editModal');
+        if (modal) modal.classList.add('hidden');
+
     } catch (error) {
-        toast("เกิดข้อผิดพลาด: " + error.message, "e");
-        console.error("Firebase Update Error:", error);
+        console.error("Error saving:", error);
+        toast("ไม่สามารถบันทึกได้: " + error.message, "e");
     }
 }
+</script>
+<script>
+  // 1. นำค่า Config ของคุณมาประกาศแบบตัวแปรปกติ
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHzB2N6FRv-9T1SdmU8GYNbMKHQ1Qwi9s",
+    authDomain: "me-qms.firebaseapp.com",
+    projectId: "me-qms",
+    storageBucket: "me-qms.firebasestorage.app",
+    messagingSenderId: "757578048543",
+    appId: "1:757578048543:web:bf6a797472aa431e71e12a",
+    measurementId: "G-GYE76953J1"
+  };
 
+  // 2. เริ่มต้นการเชื่อมต่อ (Initialize)
+  // ตรวจสอบว่าถ้ายังไม่มีการเปิด App ให้ทำการ Initialize
+  if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+  }
+
+  // 3. สร้างตัวแปรสำหรับเรียกใช้ Database และ Auth
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  
+  // (เลือกใส่) หากต้องการใช้ Analytics
+  const analytics = firebase.analytics();
+
+  // --- หลังจากนี้คุณสามารถเขียนฟังก์ชันบันทึกข้อมูลได้เลย ---
+  
+  // ตัวอย่างฟังก์ชัน Save Changes สำหรับ Profile
+  async function saveProfileChanges() {
+      const user = auth.currentUser;
+      if (!user) return toast("กรุณา Login ก่อนบันทึก", "e");
+
+      // ดึงข้อมูลจาก Input (อ้างอิงตาม ID ใน HTML ของคุณ)
+      const data = {
+          firstName: document.getElementById('rFirst').value,
+          lastName: document.getElementById('rLast').value,
+          phone: document.getElementById('rPhone').value,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+          await db.collection('users').doc(user.uid).set(data, { merge: true });
+          toast("บันทึกข้อมูลเรียบร้อยแล้ว", "s");
+      } catch (error) {
+          console.error(error);
+          toast("เกิดข้อผิดพลาด: " + error.message, "e");
+      }
+  }
 </script>
 </body>
 </html>
