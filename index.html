@@ -3,53 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME-QMS · Mitsubishi Electric Quality Management System</title>
+<title>ME-QMS · Mitsubishi Electric Quality Management</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='9' y='1' width='14' height='14' rx='1' fill='%23e60012' transform='rotate(45 16 8)'/><rect x='1' y='17' width='14' height='14' rx='1' fill='%23e60012' transform='rotate(45 8 24)'/><rect x='17' y='17' width='14' height='14' rx='1' fill='%23e60012' transform='rotate(45 24 24)'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <style>
-:root{--red:#e60012;--red-dk:#b3000e;--red-lt:rgba(230,0,18,.10);--black:#111;--g900:#1a1a1a;--g800:#2a2a2a;--g700:#3d3d3d;--g600:#5a5a5a;--g400:#909090;--g200:#e0e0e0;--g100:#f5f5f5;--white:#fff;--green:#00a651;--amber:#f59e0b;--blue:#2563eb;--sw:260px;--hh:62px;--r:8px;--r2:14px;--sh:0 2px 10px rgba(0,0,0,.09);--sh2:0 8px 30px rgba(0,0,0,.14);--tf:'Rajdhani',sans-serif;--tb:'IBM Plex Sans',sans-serif;--tr:.2s cubic-bezier(.4,0,.2,1)}
+:root{--red:#e60012;--red-dk:#b3000e;--red-lt:rgba(230,0,18,.10);--black:#111;--g700:#3d3d3d;--g600:#5a5a5a;--g400:#909090;--g200:#e0e0e0;--g100:#f5f5f5;--white:#fff;--green:#00a651;--amber:#f59e0b;--blue:#2563eb;--sw:260px;--hh:62px;--r:8px;--r2:14px;--sh:0 2px 10px rgba(0,0,0,.09);--sh2:0 8px 30px rgba(0,0,0,.14);--tf:'Rajdhani',sans-serif;--tb:'IBM Plex Sans',sans-serif;--tr:.2s cubic-bezier(.4,0,.2,1)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
 body{font-family:var(--tb);background:var(--g100);color:var(--black);min-height:100vh}
 .hidden{display:none!important}
-a{text-decoration:none;cursor:pointer}
 button{cursor:pointer;font-family:var(--tb)}
 img{max-width:100%;display:block}
 /* SPLASH */
 #splash{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;align-items:center;justify-content:center;transition:opacity .7s,visibility .7s}
-#splash.out{opacity:0;visibility:hidden}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none}
 .spl-wrap{text-align:center}
 .spl-logo{display:flex;align-items:center;gap:20px;justify-content:center;animation:fadeUp .8s ease both}
 .spl-brand-main{display:block;font-family:var(--tf);font-size:2rem;font-weight:700;color:#fff;letter-spacing:.06em}
 .spl-brand-sub{display:block;font-size:.75rem;color:var(--g400);letter-spacing:.18em;text-transform:uppercase;margin-top:3px}
-.spl-prog{width:260px;height:3px;background:var(--g800);border-radius:99px;overflow:hidden;margin:40px auto 0;animation:fadeUp .8s .3s ease both}
-.spl-bar{height:100%;width:0;background:var(--red);animation:barFill 2.4s .5s ease forwards}
-.spl-hint{font-size:.73rem;color:var(--g600);letter-spacing:.14em;text-transform:uppercase;margin-top:14px;animation:fadeUp .8s .5s ease both}
+.spl-prog{width:260px;height:3px;background:#2a2a2a;border-radius:99px;overflow:hidden;margin:40px auto 0}
+.spl-bar{height:100%;width:0;background:var(--red);animation:barFill 2.2s .3s ease forwards}
+.spl-hint{font-size:.73rem;color:var(--g600);letter-spacing:.14em;text-transform:uppercase;margin-top:14px}
 @keyframes barFill{to{width:100%}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
-@keyframes pinB{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 @keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pinB{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 /* AUTH */
 #authScreen{position:fixed;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px;transition:opacity .4s,visibility .4s}
 #authScreen.out{opacity:0;visibility:hidden;pointer-events:none}
 .auth-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0d0d0d 0%,#1c0002 50%,#0d0d0d 100%)}
 .auth-shapes{position:absolute;inset:0;overflow:hidden}
-.ash{position:absolute;border-radius:50%;opacity:.04;background:var(--red)}
+.ash{position:absolute;border-radius:50%;opacity:.05;background:var(--red)}
 .ash.a{width:500px;height:500px;top:-200px;right:-100px;animation:shapePulse 6s ease-in-out infinite}
 .ash.b{width:350px;height:350px;bottom:-150px;left:-80px;animation:shapePulse 8s 2s ease-in-out infinite}
 .ash.c{width:200px;height:200px;top:40%;left:60%;animation:shapePulse 5s 1s ease-in-out infinite}
 @keyframes shapePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-.auth-card{position:relative;z-index:1;background:var(--white);border-radius:var(--r2);width:100%;max-width:440px;box-shadow:0 24px 80px rgba(230,0,18,.18);overflow:hidden;animation:fadeUp .6s .1s ease both}
+.auth-card{position:relative;z-index:1;background:#fff;border-radius:var(--r2);width:100%;max-width:440px;box-shadow:0 24px 80px rgba(230,0,18,.2);overflow:hidden;animation:fadeUp .6s .1s ease both}
 .auth-hdr{background:var(--red);padding:24px 28px 20px;display:flex;align-items:center;gap:14px}
 .auth-hdr h1{font-family:var(--tf);font-size:1.45rem;font-weight:700;color:#fff}
 .auth-hdr p{font-size:.73rem;color:rgba(255,255,255,.75);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
@@ -57,13 +59,6 @@ img{max-width:100%;display:block}
 .atab{flex:1;padding:13px;background:none;border:none;font-family:var(--tf);font-size:1rem;font-weight:600;color:var(--g600);letter-spacing:.04em;border-bottom:2px solid transparent;margin-bottom:-2px;transition:color var(--tr)}
 .atab.active{color:var(--red);border-bottom-color:var(--red)}
 .auth-body{padding:24px 28px 28px}
-.demo-box{background:var(--g100);border-radius:var(--r);padding:12px 14px;margin-bottom:18px}
-.demo-title{font-size:.79rem;font-weight:600;color:var(--g700);margin-bottom:7px}
-.demo-row{display:flex;align-items:center;gap:8px;font-size:.77rem;color:var(--g600);margin-bottom:3px}
-.rbadge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.69rem;font-weight:700}
-.rbadge.admin{background:#ffeaea;color:var(--red)}
-.rbadge.sub{background:#fff7e0;color:#b45309}
-.rbadge.user{background:#eff6ff;color:var(--blue)}
 .fgroup{margin-bottom:15px}
 .fgroup label{display:block;font-size:.79rem;font-weight:500;color:var(--g700);margin-bottom:5px}
 .finput{width:100%;padding:10px 13px;border:1.5px solid var(--g200);border-radius:var(--r);font-family:var(--tb);font-size:.9rem;color:var(--black);background:#fff;transition:border-color var(--tr),box-shadow var(--tr)}
@@ -74,11 +69,12 @@ img{max-width:100%;display:block}
 .btn-spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 .auth-err{background:#ffeaea;color:var(--red);font-size:.82rem;padding:8px 12px;border-radius:var(--r);margin-bottom:12px;border-left:3px solid var(--red)}
 .auth-link{text-align:center;margin-top:12px;font-size:.81rem}
-.auth-link a{color:var(--red);font-weight:500}
+.auth-link a{color:var(--red);font-weight:500;cursor:pointer}
 .auth-note{font-size:.77rem;color:var(--g600);text-align:center;margin-top:10px;line-height:1.5}
+.rbadge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.69rem;font-weight:700}
+.rbadge.admin{background:#ffeaea;color:var(--red)}.rbadge.sub{background:#fff7e0;color:#b45309}.rbadge.user{background:#eff6ff;color:var(--blue)}
 /* APP */
 #app{display:flex;min-height:100vh}
-/* SIDEBAR */
 .sidebar{width:var(--sw);background:var(--black);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform var(--tr)}
 .sb-logo{padding:18px 18px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07)}
 .sb-logo-text{font-family:var(--tf);font-size:1.05rem;font-weight:700;color:#fff;line-height:1.2}
@@ -98,10 +94,7 @@ img{max-width:100%;display:block}
 .sb-urole{font-size:.69rem;color:var(--g400);margin-top:1px}
 .sb-out{background:none;border:none;color:var(--g400);font-size:1.1rem;transition:color var(--tr)}
 .sb-out:hover{color:var(--red)}
-.sb-admin{display:none}
-.sb-admin.show{display:flex}
-div.sb-admin.show{display:block}
-/* MAIN */
+.sb-admin{display:none}.sb-admin.show{display:flex}div.sb-admin.show{display:block}
 .main-wrap{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
 .topbar{height:var(--hh);background:#fff;border-bottom:2px solid var(--g200);display:flex;align-items:center;padding:0 24px;gap:14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .mob-btn{display:none;background:none;border:none;font-size:1.4rem;color:var(--g700)}
@@ -114,10 +107,10 @@ div.sb-admin.show{display:block}
 .ndot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid #fff;display:none}
 .ndot.show{display:block}
 .hava{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--tf);font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0}
-.hava img{width:100%;height:100%;object-fit:cover}
+.hava img,.ava img{width:100%;height:100%;object-fit:cover}
 .mob-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150}
-/* NOTIF PANEL */
-.np{position:absolute;top:var(--hh);right:16px;width:320px;background:#fff;border-radius:var(--r2);box-shadow:var(--sh2);z-index:300;animation:fadeUp .2s ease;overflow:hidden}
+/* NOTIF */
+.np{position:absolute;top:var(--hh);right:16px;width:320px;background:#fff;border-radius:var(--r2);box-shadow:var(--sh2);z-index:300;overflow:hidden}
 .np-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--g200);font-family:var(--tf);font-weight:700;font-size:.95rem}
 .np-hdr button{background:none;border:none;font-size:1rem;color:var(--g600)}
 .np-list{max-height:340px;overflow-y:auto}
@@ -163,12 +156,9 @@ tbody tr:hover td{background:#fafafa}
 .sb2.High{background:#ffeaea;color:var(--red)}.sb2.Medium{background:#fefce8;color:#b45309}.sb2.Low{background:#e8f8f0;color:var(--green)}
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--r);font-family:var(--tf);font-size:.9rem;font-weight:600;letter-spacing:.04em;cursor:pointer;border:none;transition:all var(--tr)}
-.btn-r{background:var(--red);color:#fff}
-.btn-r:hover{background:var(--red-dk);transform:translateY(-1px);box-shadow:0 4px 14px rgba(230,0,18,.24)}
-.btn-o{background:transparent;color:var(--g700);border:1.5px solid var(--g200)}
-.btn-o:hover{border-color:var(--red);color:var(--red)}
-.btn-g{background:var(--g100);color:var(--g700);border:none}
-.btn-g:hover{background:var(--g200)}
+.btn-r{background:var(--red);color:#fff}.btn-r:hover{background:var(--red-dk);transform:translateY(-1px);box-shadow:0 4px 14px rgba(230,0,18,.24)}
+.btn-o{background:transparent;color:var(--g700);border:1.5px solid var(--g200)}.btn-o:hover{border-color:var(--red);color:var(--red)}
+.btn-g{background:var(--g100);color:var(--g700);border:none}.btn-g:hover{background:var(--g200)}
 .btn-sm{padding:5px 12px;font-size:.79rem}
 .bapp{background:var(--green);color:#fff;border:none;padding:4px 11px;border-radius:var(--r);font-size:.75rem;font-weight:600;cursor:pointer}
 .brej{background:var(--red);color:#fff;border:none;padding:4px 11px;border-radius:var(--r);font-size:.75rem;font-weight:600;cursor:pointer}
@@ -182,29 +172,23 @@ tbody tr:hover td{background:#fafafa}
 .eg{display:flex;gap:7px;flex-wrap:wrap}
 .eb{padding:7px 11px;background:var(--g100);border:1.5px solid var(--g200);border-radius:var(--r);font-size:.74rem;font-weight:600;color:var(--g700);cursor:pointer;transition:all var(--tr);white-space:nowrap}
 .eb:hover{background:var(--black);color:#fff;border-color:var(--black)}
-/* FORMS */
+/* FORM */
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .ff{grid-column:1/-1}
 textarea.finput{resize:vertical;min-height:80px}
 .dz{border:2px dashed var(--g200);border-radius:var(--r);padding:26px;text-align:center;cursor:pointer;transition:all var(--tr)}
 .dz:hover,.dz.ov{border-color:var(--red);background:var(--red-lt)}
-.dz-icon{font-size:2rem}
-.dz-txt{font-size:.83rem;color:var(--g600);margin-top:6px}
-.dz-sub{font-size:.74rem;color:var(--g400);margin-top:3px}
+.dz-icon{font-size:2rem}.dz-txt{font-size:.83rem;color:var(--g600);margin-top:6px}.dz-sub{font-size:.74rem;color:var(--g400);margin-top:3px}
 .fl{margin-top:10px;display:flex;flex-direction:column;gap:5px}
 .fi{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--g100);border-radius:var(--r);font-size:.81rem}
 .fn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.frm{background:none;border:none;color:var(--g400);font-size:.95rem;transition:color var(--tr)}
-.frm:hover{color:var(--red)}
-.ur{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.ur .finput{flex:1}
-.aub{width:100%;padding:8px;border:1.5px dashed var(--g200);background:none;border-radius:var(--r);font-size:.81rem;color:var(--g600);cursor:pointer;transition:all var(--tr)}
-.aub:hover{border-color:var(--red);color:var(--red)}
+.frm{background:none;border:none;color:var(--g400);font-size:.95rem;transition:color var(--tr)}.frm:hover{color:var(--red)}
+.ur{display:flex;align-items:center;gap:8px;margin-bottom:8px}.ur .finput{flex:1}
+.aub{width:100%;padding:8px;border:1.5px dashed var(--g200);background:none;border-radius:var(--r);font-size:.81rem;color:var(--g600);cursor:pointer;transition:all var(--tr)}.aub:hover{border-color:var(--red);color:var(--red)}
 /* CHAT */
 .chat-box{background:var(--g100);border-radius:var(--r2);overflow:hidden}
 .chat-msgs{height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px}
-.cm{max-width:76%}
-.cm.own{align-self:flex-end}.cm.oth{align-self:flex-start}
+.cm{max-width:76%}.cm.own{align-self:flex-end}.cm.oth{align-self:flex-start}
 .cm-hdr{font-size:.69rem;color:var(--g400);margin-bottom:3px;display:flex;gap:7px}
 .cm.own .cm-hdr{justify-content:flex-end}
 .cb{padding:9px 13px;border-radius:14px;font-size:.86rem;line-height:1.5}
@@ -214,28 +198,25 @@ textarea.finput{resize:vertical;min-height:80px}
 .ci-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#fff;border-top:1px solid var(--g200)}
 .ct{flex:1;border:1.5px solid var(--g200);border-radius:99px;padding:7px 14px;font-family:var(--tb);font-size:.86rem}
 .ct:focus{outline:none;border-color:var(--red)}
-.cs{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background var(--tr)}
-.cs:hover{background:var(--red-dk)}
-.ca2{background:none;border:none;color:var(--g400);font-size:1.05rem;transition:color var(--tr)}
-.ca2:hover{color:var(--red)}
+.cs{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background var(--tr)}.cs:hover{background:var(--red-dk)}
+.ca2{background:none;border:none;color:var(--g400);font-size:1.05rem;transition:color var(--tr)}.ca2:hover{color:var(--red)}
 /* AVATAR */
 .ava{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--tf);font-weight:700;font-size:.88rem;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
-.ava img{width:100%;height:100%;object-fit:cover}
+.pava-lg{width:84px;height:84px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--tf);font-weight:700;font-size:1.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;position:relative}
+.pava-lg:hover::after{content:'📷';position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:1.4rem}
 /* TABS */
 .itabs{display:flex;border-bottom:2px solid var(--g200);margin-bottom:18px;overflow-x:auto}
 .itab{padding:10px 18px;background:none;border:none;font-family:var(--tf);font-size:.92rem;font-weight:600;color:var(--g600);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;letter-spacing:.03em;white-space:nowrap;transition:all var(--tr)}
 .itab.active{color:var(--red);border-bottom-color:var(--red)}
 .tgrp{display:flex;border:1.5px solid var(--g200);border-radius:var(--r);overflow:hidden}
-.tgb{padding:6px 14px;background:none;border:none;font-size:.81rem;font-weight:600;color:var(--g600);cursor:pointer;transition:all var(--tr)}
-.tgb.active{background:var(--red);color:#fff}
+.tgb{padding:6px 14px;background:none;border:none;font-size:.81rem;font-weight:600;color:var(--g600);cursor:pointer;transition:all var(--tr)}.tgb.active{background:var(--red);color:#fff}
 /* MAP */
 .map-ph{background:linear-gradient(135deg,#1a2433,#2a3a4a);border-radius:var(--r2);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4);font-size:.87rem;position:relative;overflow:hidden;min-height:340px}
 .mpl{position:absolute;inset:0}
 .mp{position:absolute;font-size:1.5rem;cursor:pointer;animation:pinB 1.2s ease-in-out infinite alternate}
 /* GROUPS */
 .gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.gc{background:#fff;border-radius:var(--r2);padding:16px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;transition:transform var(--tr),box-shadow var(--tr)}
-.gc:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.gc{background:#fff;border-radius:var(--r2);padding:16px 18px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px;transition:transform var(--tr),box-shadow var(--tr)}.gc:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
 .gi{width:46px;height:46px;border-radius:var(--r);background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
 .ginfo{flex:1;min-width:0}
 .gname{font-family:var(--tf);font-size:.97rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -250,6 +231,13 @@ textarea.finput{resize:vertical;min-height:80px}
 .hero-banner h2{font-family:var(--tf);font-size:2rem;font-weight:700;color:#fff;position:relative}
 .hero-banner p{color:rgba(255,255,255,.6);margin-top:7px;position:relative}
 .hbo{position:absolute;top:12px;right:12px}
+/* QR CODE */
+.qr-card{background:#fff;border-radius:var(--r2);padding:24px;box-shadow:var(--sh);text-align:center}
+.qr-card h3{font-family:var(--tf);font-size:1.1rem;margin-bottom:6px;color:var(--black)}
+.qr-card p{font-size:.82rem;color:var(--g600);margin-bottom:16px}
+#qrcode{display:inline-block;padding:12px;background:#fff;border-radius:var(--r);border:2px solid var(--g200)}
+#qrcode img{margin:auto}
+.qr-url{font-size:.78rem;color:var(--g400);margin-top:10px;word-break:break-all;font-family:monospace;background:var(--g100);padding:6px 10px;border-radius:var(--r)}
 /* TOAST */
 .tw2{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
 .toast{background:#fff;border-radius:var(--r);padding:13px 16px;box-shadow:var(--sh2);display:flex;align-items:center;gap:11px;min-width:270px;max-width:340px;border-left:4px solid var(--green);animation:toastIn .3s ease;font-size:.85rem;line-height:1.4}
@@ -259,25 +247,20 @@ textarea.finput{resize:vertical;min-height:80px}
 .mb{background:#fff;border-radius:var(--r2);width:100%;max-width:800px;box-shadow:var(--sh2);animation:modalIn .28s cubic-bezier(.2,1,.3,1) both;margin:auto}
 .mh{padding:18px 22px;border-bottom:2px solid var(--g200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;border-radius:var(--r2) var(--r2) 0 0}
 .mt{font-family:var(--tf);font-size:1.15rem;font-weight:700}
-.mc{background:none;border:none;font-size:1.35rem;color:var(--g600);line-height:1;transition:color var(--tr)}
-.mc:hover{color:var(--red)}
+.mc{background:none;border:none;font-size:1.35rem;color:var(--g600);line-height:1;transition:color var(--tr)}.mc:hover{color:var(--red)}
 .mbody{padding:22px}
 .mf{padding:14px 22px;border-top:2px solid var(--g200);display:flex;justify-content:flex-end;gap:9px;position:sticky;bottom:0;background:#fff;border-radius:0 0 var(--r2) var(--r2)}
 /* SPINNER */
 .pspin{display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--g600);font-size:.9rem}
 .sr{width:28px;height:28px;border:3px solid var(--g200);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
-/* PROFILE */
-.pava-lg{width:84px;height:84px;border-radius:50%;background:var(--red);color:#fff;font-family:var(--tf);font-weight:700;font-size:1.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;flex-shrink:0;position:relative}
-.pava-lg::after{content:'📷';position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;border-radius:50%;font-size:1.4rem}
-.pava-lg:hover::after{display:flex}
 /* RESPONSIVE */
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none}
   .mob-ov{display:block}.main-wrap{margin-left:0}.mob-btn{display:block}
   .stats-grid{grid-template-columns:1fr 1fr}.fb{flex-direction:column;align-items:stretch}
   .sw{min-width:unset}.frow{grid-template-columns:1fr}.fg{grid-template-columns:1fr}
-  .np{right:0;width:100vw;border-radius:0 0 var(--r2) var(--r2)}
-  .page-area{padding:16px}.card{padding:16px}.cgrid2{grid-template-columns:1fr}
+  .np{right:0;width:100vw;border-radius:0 0 var(--r2) var(--r2)}.page-area{padding:16px}.card{padding:16px}
+  .cgrid2{grid-template-columns:1fr}
 }
 @media(max-width:480px){.stats-grid{grid-template-columns:1fr}.tgrp{display:none}}
 </style>
@@ -299,7 +282,7 @@ textarea.finput{resize:vertical;min-height:80px}
       </div>
     </div>
     <div class="spl-prog"><div class="spl-bar"></div></div>
-    <p class="spl-hint">Professional Developer Edition · v2.0</p>
+    <p class="spl-hint">Connecting to Firebase…</p>
   </div>
 </div>
 
@@ -320,23 +303,16 @@ textarea.finput{resize:vertical;min-height:80px}
       <button class="atab active" onclick="switchTab('login')">Sign In</button>
       <button class="atab" onclick="switchTab('register')">Register</button>
     </div>
-
-    <!-- LOGIN -->
     <div class="auth-body" id="loginPane">
-      <div class="demo-box">
-        <p class="demo-title">🔑 Demo Accounts (click to fill)</p>
-        <div class="demo-row"><span class="rbadge admin">Admin</span><a onclick="fillLogin('admin@meqms.com','Admin1234!')">admin@meqms.com / Admin1234!</a></div>
-        <div class="demo-row"><span class="rbadge sub">Sub-Admin</span><a onclick="fillLogin('sub@meqms.com','Sub1234!')">sub@meqms.com / Sub1234!</a></div>
-        <div class="demo-row"><span class="rbadge user">User</span><a onclick="fillLogin('user@meqms.com','User1234!')">user@meqms.com / User1234!</a></div>
-      </div>
-      <div class="fgroup"><label>Email Address</label><input type="email" id="lEmail" class="finput" placeholder="your@email.com"></div>
+      <div class="fgroup"><label>Email Address</label><input type="email" id="lEmail" class="finput" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div class="fgroup"><label>Password</label><input type="password" id="lPass" class="finput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div id="lErr" class="auth-err hidden"></div>
-      <button class="btn-auth" onclick="doLogin()"><span id="lBtnTxt">Sign In to QMS</span><span id="lBtnSpin" class="btn-spinner hidden"></span></button>
+      <button class="btn-auth" onclick="doLogin()">
+        <span id="lBtnTxt">Sign In to QMS</span>
+        <span id="lBtnSpin" class="btn-spinner hidden"></span>
+      </button>
       <p class="auth-link"><a onclick="forgotPw()">Forgot password?</a></p>
     </div>
-
-    <!-- REGISTER -->
     <div class="auth-body hidden" id="regPane">
       <div class="frow">
         <div class="fgroup"><label>First Name *</label><input type="text" id="rFirst" class="finput" placeholder="John"></div>
@@ -355,13 +331,15 @@ textarea.finput{resize:vertical;min-height:80px}
         <div class="fgroup"><label>Password *</label><input type="password" id="rPass" class="finput" placeholder="Min 8 characters"></div>
       </div>
       <div id="rErr" class="auth-err hidden"></div>
-      <button class="btn-auth" onclick="doRegister()"><span id="rBtnTxt">Submit Registration</span><span id="rBtnSpin" class="btn-spinner hidden"></span></button>
-      <p class="auth-note">Registration requires admin approval. You'll receive an email once approved.</p>
+      <button class="btn-auth" onclick="doRegister()">
+        <span id="rBtnTxt">Submit Registration</span>
+        <span id="rBtnSpin" class="btn-spinner hidden"></span>
+      </button>
+      <p class="auth-note">Registration requires admin approval. You will be notified by email once approved.</p>
     </div>
   </div>
 </div>
 
-<!-- TOASTS -->
 <div class="tw2" id="toastWrap"></div>
 
 <!-- APP -->
@@ -383,9 +361,10 @@ textarea.finput{resize:vertical;min-height:80px}
       <div class="sbi" data-p="map" onclick="go('map')"><i>🗺️</i>Site Map</div>
       <div class="sb-sec">Collaboration</div>
       <div class="sbi" data-p="groups" onclick="go('groups')"><i>💬</i>Chat Groups</div>
+      <div class="sbi" data-p="qr" onclick="go('qr')"><i>📱</i>QR Access Code</div>
       <div class="sbi" data-p="profile" onclick="go('profile')"><i>👤</i>My Profile</div>
       <div class="sb-sec sb-admin" id="sbAdSec">Admin</div>
-      <div class="sbi sb-admin" id="sbAdU" data-p="adminUsers" onclick="go('adminUsers')"><i>👥</i>Users &amp; Approvals<b class="sbadge show" id="sbPB">3</b></div>
+      <div class="sbi sb-admin" id="sbAdU" data-p="adminUsers" onclick="go('adminUsers')"><i>👥</i>Users &amp; Approvals<b class="sbadge" id="sbPB">0</b></div>
       <div class="sbi sb-admin" id="sbAdD" data-p="adminDesign" onclick="go('adminDesign')"><i>🎨</i>Design System</div>
       <div class="sbi sb-admin" id="sbAdC" data-p="adminCats" onclick="go('adminCats')"><i>🏷️</i>Issue Categories</div>
     </nav>
@@ -395,16 +374,15 @@ textarea.finput{resize:vertical;min-height:80px}
       <button class="sb-out" onclick="doLogout()" title="Logout">⏏</button>
     </div>
   </aside>
-
   <div class="mob-ov" id="mobOv" onclick="toggleSB()"></div>
-
   <div class="main-wrap">
     <header class="topbar">
       <button class="mob-btn" onclick="toggleSB()">☰</button>
       <div class="tb-title" id="tbTitle">Dashboard</div>
       <div class="tb-right">
-        <span class="live-pill"><span class="live-dot"></span>Live</span>
-        <button class="icon-btn" onclick="toggleNP()" id="nBtn">🔔<span class="ndot show" id="nDot"></span></button>
+        <span class="live-pill"><span class="live-dot"></span>Firebase Live</span>
+        <button class="icon-btn" onclick="toggleNP()" id="nBtn">🔔<span class="ndot" id="nDot"></span></button>
+        <button class="icon-btn" onclick="go('qr')" title="QR Code">📱</button>
         <div class="hava" id="hAva" onclick="go('profile')">?</div>
       </div>
     </header>
@@ -416,279 +394,418 @@ textarea.finput{resize:vertical;min-height:80px}
   </div>
 </div>
 
-<!-- MODAL -->
-<div class="mo hidden" id="mOverlay">
-  <div class="mb" id="mBox"></div>
-</div>
+<div class="mo hidden" id="mOverlay"><div class="mb" id="mBox"></div></div>
 
 <script>
-// ══════════════════════════════════════
-//  DATA
-// ══════════════════════════════════════
-const USERS={
-  "admin@meqms.com":{uid:"u1",password:"Admin1234!",firstName:"Admin",lastName:"User",role:"admin",office:"Bangkok Head Office",phone:"+66 2 000 0001",approved:true,initials:"AU"},
-  "sub@meqms.com":  {uid:"u2",password:"Sub1234!",  firstName:"Sub",  lastName:"Admin",role:"subadmin",office:"Bangkok Head Office",phone:"+66 2 000 0002",approved:true,initials:"SA"},
-  "user@meqms.com": {uid:"u3",password:"User1234!", firstName:"Sales",lastName:"User", role:"user",   office:"Chiang Mai Office",  phone:"+66 53 000 003",approved:true,initials:"SU"}
+// ═══════════════════════════════════════════════════
+//  FIREBASE CONFIG — ME-QMS Project (pattapol)
+// ═══════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "AIzaSyDHzB2N6FRv-9T1SdmU8GYNbMKHQ1Qwi9s",
+  authDomain:        "me-qms.firebaseapp.com",
+  projectId:         "me-qms",
+  storageBucket:     "me-qms.firebasestorage.app",
+  messagingSenderId: "757578048543",
+  appId:             "1:757578048543:web:bf6a797472aa431e71e12a",
+  measurementId:     "G-GYE76953J1"
 };
 
-let CASES=[
-  {id:"QM-2024-001",title:"Compressor loud noise – central VRF system",office:"Bangkok Head Office",category:"Compressor Failure",priority:"High",status:"open",model:"PURY-P250YJM-A",serial:"TH240001234",model2:"",serial2:"",customer:"Central World Bangkok",address:"999 Rama 1 Rd, Pathum Wan, Bangkok 10330",lat:13.7467,lng:100.5390,installDate:"2023-08-15",occurrenceDate:"2024-06-10",complaintDate:"2024-06-12",registeredBy:"admin@meqms.com",createdAt:"2024-06-12",updatedAt:"2024-06-18",description:"Customer reported loud knocking noise from outdoor compressor unit. Started intermittently then became constant. Unit still operating but noise is disturbing.",files:[],chat:[{by:"Admin User",email:"admin@meqms.com",msg:"Case registered and assigned to field team.",ts:"2024-06-12 09:15"},{by:"Sub Admin",email:"sub@meqms.com",msg:"Field engineer scheduled for site visit on June 14.",ts:"2024-06-13 10:30"},{by:"Admin User",email:"admin@meqms.com",msg:"Engineer confirmed worn bearing. Part return initiated.",ts:"2024-06-14 16:45"}]},
-  {id:"QM-2024-002",title:"PCB short circuit after power surge",office:"Bangkok Head Office",category:"PCB / Electrical Issue",priority:"High",status:"in-progress",model:"MSZ-GE25VA",serial:"TH230098761",model2:"MUZ-GE25VA",serial2:"TH230098762",customer:"Siam Paragon",address:"991 Rama 1 Rd, Pathum Wan, Bangkok 10330",lat:13.7450,lng:100.5347,installDate:"2022-11-20",occurrenceDate:"2024-06-08",complaintDate:"2024-06-09",registeredBy:"sub@meqms.com",createdAt:"2024-06-09",updatedAt:"2024-06-15",description:"Power surge due to lightning strike damaged the main PCB. Unit shows E6 error code. Complete unit shutdown.",files:[],chat:[{by:"Sub Admin",email:"sub@meqms.com",msg:"PCB replacement ordered from warehouse.",ts:"2024-06-10 08:00"}]},
-  {id:"QM-2024-003",title:"Refrigerant leak – outdoor unit",office:"Chiang Mai Office",category:"Refrigerant Leak",priority:"Medium",status:"in-progress",model:"SUZ-M25VA",serial:"CM24005555",model2:"",serial2:"",customer:"Maya Lifestyle Shopping Center",address:"55 Huay Kaew Rd, Mueang, Chiang Mai 50200",lat:18.8038,lng:98.9715,installDate:"2023-03-10",occurrenceDate:"2024-06-05",complaintDate:"2024-06-07",registeredBy:"user@meqms.com",createdAt:"2024-06-07",updatedAt:"2024-06-14",description:"Visible oil stain on outdoor unit base. Cooling efficiency dropped significantly. R32 refrigerant leak suspected.",files:[],chat:[{by:"Sales User",email:"user@meqms.com",msg:"Sent field technician. Leak confirmed at service valve.",ts:"2024-06-08 11:00"}]},
-  {id:"QM-2024-004",title:"Fan motor vibration – indoor unit",office:"Bangkok Head Office",category:"Fan Motor Problem",priority:"Low",status:"pending",model:"MSZ-AP50VGK",serial:"TH240066770",model2:"",serial2:"",customer:"Asiatique The Riverfront",address:"2194 Charoenkrung Rd, Bangkok 10120",lat:13.7191,lng:100.5119,installDate:"2024-01-05",occurrenceDate:"2024-06-09",complaintDate:"2024-06-10",registeredBy:"admin@meqms.com",createdAt:"2024-06-10",updatedAt:"2024-06-10",description:"Indoor unit making rattling sound during operation. Fan blade may have debris or bearing issue.",files:[],chat:[]},
-  {id:"QM-2024-005",title:"Outdoor unit noise complaint at night",office:"Phuket Office",category:"Noise / Vibration",priority:"Medium",status:"closed",model:"SUZ-KA50VA",serial:"PH240011220",model2:"",serial2:"",customer:"Central Festival Phuket",address:"74-75 Moo 5, Wichit Songkram Rd, Phuket 83120",lat:7.8841,lng:98.3924,installDate:"2023-07-22",occurrenceDate:"2024-05-28",complaintDate:"2024-05-30",registeredBy:"admin@meqms.com",createdAt:"2024-05-30",updatedAt:"2024-06-10",description:"Residential neighbors complained of noise from rooftop outdoor unit. Resolved with new anti-vibration mounts.",files:[],chat:[{by:"Admin User",email:"admin@meqms.com",msg:"Case closed. Anti-vibration mounts installed. Customer confirmed noise resolved.",ts:"2024-06-10 14:00"}]},
-  {id:"QM-2024-006",title:"Thermostat unresponsive – remote failure",office:"Chiang Mai Office",category:"PCB / Electrical Issue",priority:"High",status:"open",model:"MSZ-EF42VE",serial:"CM240077880",model2:"",serial2:"",customer:"Nimman One Mall",address:"1 Nimman Rd, Su Thep, Chiang Mai 50200",lat:18.7985,lng:98.9680,installDate:"2023-09-14",occurrenceDate:"2024-06-17",complaintDate:"2024-06-18",registeredBy:"user@meqms.com",createdAt:"2024-06-18",updatedAt:"2024-06-18",description:"Remote control not pairing with unit. IR receiver on indoor unit may have failed.",files:[],chat:[]},
-  {id:"QM-2024-007",title:"Water leakage from indoor unit drain",office:"Bangkok Head Office",category:"Drainage Issue",priority:"Medium",status:"open",model:"MSZ-GL50VA",serial:"TH240088990",model2:"",serial2:"",customer:"Icon Siam",address:"299 Charoennakorn Rd, Khlong San, Bangkok 10600",lat:13.7267,lng:100.5090,installDate:"2024-02-20",occurrenceDate:"2024-06-19",complaintDate:"2024-06-20",registeredBy:"admin@meqms.com",createdAt:"2024-06-20",updatedAt:"2024-06-20",description:"Water dripping from indoor unit onto floor. Drain pipe may be blocked or improperly sloped.",files:[],chat:[]}
-];
+firebase.initializeApp(firebaseConfig);
+const db      = firebase.firestore();
+const fbAuth  = firebase.auth();
+const fbStore = firebase.storage();
 
-let CATS=[
-  {id:"c1",name:"Compressor Failure",   desc:"Compressor malfunction or noise issues",count:18},
-  {id:"c2",name:"PCB / Electrical Issue",desc:"Printed circuit board or electrical faults",count:12},
-  {id:"c3",name:"Refrigerant Leak",     desc:"Refrigerant leakage or low gas pressure",count:9},
-  {id:"c4",name:"Fan Motor Problem",    desc:"Fan motor failure or noise",count:5},
-  {id:"c5",name:"Noise / Vibration",    desc:"Abnormal noise during operation",count:3},
-  {id:"c6",name:"Drainage Issue",       desc:"Water leakage or blocked drain",count:2},
-  {id:"c7",name:"Remote / Control",     desc:"Remote control or thermostat issues",count:4}
-];
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let CU = null, CASES = [], CATS = [], GROUPS = [], PENDING = [], ALLUSERS = [];
+let SETTINGS = { googleMapsKey:'', systemTitle:'ME-QMS · Quality Management System', heroBanner:'Mitsubishi Electric QMS', heroSub:'Professional Quality Management · Powered by Innovation' };
+let filteredCases = [], _unsubCases = null, profileAvaData = '';
 
-let GROUPS=[
-  {id:"g1",name:"Bangkok HQ – QC Team",icon:"🏢",members:["AU","SA","SU"],memberCount:6,lastMsg:"Compressor unit parts returned",lastTs:"5m ago"},
-  {id:"g2",name:"Chiang Mai Support",  icon:"🏔️",members:["SU","CM"],memberCount:4,lastMsg:"Site visit confirmed Friday",lastTs:"1h ago"},
-  {id:"g3",name:"Engineering – Critical",icon:"⚙️",members:["AU","SA"],memberCount:5,lastMsg:"PCB analysis report uploaded",lastTs:"2h ago"},
-  {id:"g4",name:"All Offices Bulletin",icon:"📢",members:["AU","SA","SU"],memberCount:12,lastMsg:"Monthly quality report published",lastTs:"1d ago"}
-];
+// ═══════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════
+const sleep   = ms => new Promise(r => setTimeout(r, ms));
+const today   = ()  => new Date().toISOString().slice(0, 10);
+const nowTs   = ()  => new Date().toISOString().slice(0, 16).replace('T', ' ');
+const fmtDate = d   => { if (!d || d === '—') return '—'; try { return new Date(d).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) } catch { return d } };
+const genId   = ()  => 'QM-' + new Date().getFullYear() + '-' + String(CASES.length + 1).padStart(3, '0');
+const TS      = ()  => firebase.firestore.FieldValue.serverTimestamp();
+const statusBadge = s => `<span class="sb2 ${(s||'').toLowerCase().replace(/\s/g,'-')}">${(s||'').replace(/-/g,' ')}</span>`;
+const priBadge    = p => `<span class="sb2 ${p||''}">${p||'—'}</span>`;
+const canEdit     = c => CU && (CU.role==='admin' || CU.role==='subadmin' || c.registeredBy===CU.email);
+const fbErr = code => ({'auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/email-already-in-use':'Email already registered.','auth/invalid-email':'Invalid email.','auth/weak-password':'Password too weak (min 8).','auth/too-many-requests':'Too many attempts. Try later.','auth/network-request-failed':'Network error.'}[code] || null);
 
-let PENDING=[
-  {id:"p1",firstName:"Somchai",lastName:"Jaidee",   email:"somchai@me.com",  office:"Chiang Mai Office",      phone:"+66 81 234 5678",registeredAt:"2024-06-15"},
-  {id:"p2",firstName:"Siriporn",lastName:"Maneerat",email:"siriporn@me.com", office:"Phuket Office",           phone:"+66 85 987 6543",registeredAt:"2024-06-14"},
-  {id:"p3",firstName:"Wichai",lastName:"Thanakorn", email:"wichai@me.com",   office:"Bangkok Head Office",     phone:"+66 89 111 2222",registeredAt:"2024-06-13"}
-];
+// ═══════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════
+function toast(msg, type='s') {
+  const el = document.createElement('div');
+  el.className = 'toast' + (type==='e' ? ' e' : type==='i' ? ' i' : '');
+  el.innerHTML = `<span>${{s:'✅',e:'❌',i:'ℹ️'}[type]||'✅'}</span><span>${msg}</span>`;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(() => { el.style.transition = 'opacity .4s'; el.style.opacity = '0'; }, 2800);
+  setTimeout(() => el.remove(), 3300);
+}
 
-let SETTINGS={googleMapsKey:"",systemTitle:"ME-QMS · Quality Management System",heroBanner:"Mitsubishi Electric QMS",heroSub:"Professional Quality Management · Powered by Innovation",primaryColor:"#e60012"};
-let ALLUSERS=Object.entries(USERS).map(([email,u])=>({email,...u}));
+// ═══════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════
+function openModal(title, body, footer='') {
+  document.getElementById('mBox').innerHTML = `
+    <div class="mh"><div class="mt">${title}</div><button class="mc" onclick="closeModal()">×</button></div>
+    <div class="mbody" id="mBody">${body}</div>
+    ${footer ? `<div class="mf">${footer}</div>` : ''}`;
+  document.getElementById('mOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() { document.getElementById('mOverlay').classList.add('hidden'); document.body.style.overflow = ''; }
+document.addEventListener('click', e => { if (e.target === document.getElementById('mOverlay')) closeModal(); });
 
-let CU=null; // current user
-let filteredCases=[...CASES];
-
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  AUTH
-// ══════════════════════════════════════
-function switchTab(t){
-  document.getElementById('loginPane').classList.toggle('hidden',t!=='login');
-  document.getElementById('regPane').classList.toggle('hidden',t!=='register');
-  document.querySelectorAll('.atab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='login')||(i===1&&t==='register')));
-  ['lErr','rErr'].forEach(id=>{const e=document.getElementById(id);if(e){e.classList.add('hidden');e.textContent=''}});
+// ═══════════════════════════════════════════════════
+function switchTab(t) {
+  document.getElementById('loginPane').classList.toggle('hidden', t !== 'login');
+  document.getElementById('regPane').classList.toggle('hidden', t !== 'register');
+  document.querySelectorAll('.atab').forEach((b, i) => b.classList.toggle('active', (i===0&&t==='login')||(i===1&&t==='register')));
+  ['lErr','rErr'].forEach(id => { const e = document.getElementById(id); if(e){e.classList.add('hidden');e.textContent='';} });
 }
-function fillLogin(e,p){document.getElementById('lEmail').value=e;document.getElementById('lPass').value=p;}
-function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.classList.remove('hidden')}
-function setBtnLoad(pre,on){document.getElementById(pre+'BtnTxt').classList.toggle('hidden',on);document.getElementById(pre+'BtnSpin').classList.toggle('hidden',!on)}
+function showErr(id, msg) { const e = document.getElementById(id); e.textContent = msg; e.classList.remove('hidden'); }
+function setBL(p, on) { document.getElementById(p+'BtnTxt').classList.toggle('hidden',on); document.getElementById(p+'BtnSpin').classList.toggle('hidden',!on); }
 
-async function doLogin(){
-  const email=document.getElementById('lEmail').value.trim().toLowerCase();
-  const pass=document.getElementById('lPass').value;
+async function doLogin() {
+  const email = document.getElementById('lEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('lPass').value;
   document.getElementById('lErr').classList.add('hidden');
-  if(!email||!pass){showErr('lErr','Please enter email and password.');return;}
-  setBtnLoad('l',true);
-  await sleep(500);
-  const u=USERS[email];
-  if(!u||u.password!==pass){showErr('lErr','Invalid email or password.');setBtnLoad('l',false);return;}
-  CU={email,...u};
-  setBtnLoad('l',false);
-  launchApp();
+  if (!email || !pass) { showErr('lErr', 'Please enter email and password.'); return; }
+  setBL('l', true);
+  try {
+    const cred = await fbAuth.signInWithEmailAndPassword(email, pass);
+    const snap = await db.collection('users').doc(cred.user.uid).get();
+    if (!snap.exists) { await fbAuth.signOut(); showErr('lErr','User profile not found. Contact admin.'); setBL('l',false); return; }
+    const data = snap.data();
+    if (!data.approved) { await fbAuth.signOut(); showErr('lErr','Account awaiting admin approval.'); setBL('l',false); return; }
+    CU = { uid: cred.user.uid, email, ...data };
+    await loadAllData();
+    setBL('l', false);
+    launchApp();
+  } catch(e) { showErr('lErr', fbErr(e.code) || e.message); setBL('l', false); }
 }
 
-async function doRegister(){
-  const first=document.getElementById('rFirst').value.trim();
-  const last=document.getElementById('rLast').value.trim();
-  const email=document.getElementById('rEmail').value.trim();
-  const office=document.getElementById('rOffice').value;
-  const phone=document.getElementById('rPhone').value.trim();
-  const pass=document.getElementById('rPass').value;
+async function doRegister() {
+  const first  = document.getElementById('rFirst').value.trim();
+  const last   = document.getElementById('rLast').value.trim();
+  const email  = document.getElementById('rEmail').value.trim().toLowerCase();
+  const office = document.getElementById('rOffice').value;
+  const phone  = document.getElementById('rPhone').value.trim();
+  const pass   = document.getElementById('rPass').value;
   document.getElementById('rErr').classList.add('hidden');
-  if(!first||!last||!email||!office||!phone||!pass){showErr('rErr','Please fill in all required fields.');return;}
-  if(pass.length<8){showErr('rErr','Password must be at least 8 characters.');return;}
-  setBtnLoad('r',true);
-  await sleep(700);
-  setBtnLoad('r',false);
-  toast('Registration submitted! Awaiting admin approval. You will be notified by email.','i');
-  switchTab('login');
+  if (!first||!last||!email||!office||!phone||!pass) { showErr('rErr','Fill in all required fields.'); return; }
+  if (pass.length < 8) { showErr('rErr','Password must be at least 8 characters.'); return; }
+  setBL('r', true);
+  try {
+    const cred = await fbAuth.createUserWithEmailAndPassword(email, pass);
+    const initials = (first[0] + last[0]).toUpperCase();
+    await db.collection('users').doc(cred.user.uid).set({ firstName:first, lastName:last, email, office, phone, role:'user', approved:false, initials, createdAt:TS() });
+    await db.collection('pending').doc(cred.user.uid).set({ uid:cred.user.uid, firstName:first, lastName:last, email, office, phone, registeredAt:TS() });
+    await fbAuth.signOut();
+    setBL('r', false);
+    toast('Registration submitted! Awaiting admin approval.', 'i');
+    switchTab('login');
+  } catch(e) { showErr('rErr', fbErr(e.code) || e.message); setBL('r', false); }
 }
 
-function forgotPw(){
-  const email=document.getElementById('lEmail').value.trim();
-  if(!email){showErr('lErr','Enter your email above first.');return;}
-  toast('Password reset email sent to '+email,'i');
+async function forgotPw() {
+  const email = document.getElementById('lEmail').value.trim();
+  if (!email) { showErr('lErr','Enter your email first.'); return; }
+  try { await fbAuth.sendPasswordResetEmail(email); toast('Password reset email sent to ' + email, 'i'); }
+  catch(e) { showErr('lErr', fbErr(e.code) || e.message); }
 }
 
-function doLogout(){
-  CU=null;
+async function doLogout() {
+  if (_unsubCases) { _unsubCases(); _unsubCases = null; }
+  await fbAuth.signOut();
+  CU = null; CASES = []; filteredCases = [];
   document.getElementById('app').classList.add('hidden');
-  document.getElementById('authScreen').classList.remove('hidden','out');
-  toast('Logged out successfully','i');
+  document.getElementById('authScreen').classList.remove('hidden', 'out');
+  toast('Logged out successfully', 'i');
 }
 
-function launchApp(){
+// ═══════════════════════════════════════════════════
+//  LOAD DATA FROM FIRESTORE
+// ═══════════════════════════════════════════════════
+async function loadAllData() {
+  // Categories
+  const cs = await db.collection('categories').orderBy('name').get();
+  if (cs.empty) await seedCategories();
+  else CATS = cs.docs.map(d => ({id:d.id,...d.data()}));
+
+  // Groups
+  const gs = await db.collection('groups').get();
+  if (gs.empty) await seedGroups();
+  else GROUPS = gs.docs.map(d => ({id:d.id,...d.data()}));
+
+  // Pending
+  const ps = await db.collection('pending').get();
+  PENDING = ps.docs.map(d => ({id:d.id,...d.data(), registeredAt: d.data().registeredAt?.toDate?.()?.toISOString().slice(0,10) || today()}));
+
+  // All users (admin only)
+  if (CU.role === 'admin' || CU.role === 'subadmin') {
+    const us = await db.collection('users').where('approved','==',true).get();
+    ALLUSERS = us.docs.map(d => ({id:d.id,...d.data()}));
+  }
+
+  // Settings
+  const ss = await db.collection('settings').doc('global').get();
+  if (ss.exists) Object.assign(SETTINGS, ss.data());
+
+  // Cases — realtime listener
+  if (_unsubCases) _unsubCases();
+  _unsubCases = db.collection('cases').orderBy('createdAt','desc').onSnapshot(snap => {
+    CASES = snap.docs.map(d => ({
+      id: d.id, ...d.data(),
+      createdAt: d.data().createdAt?.toDate?.()?.toISOString().slice(0,10) || d.data().createdAt || today()
+    }));
+    filteredCases = [...CASES];
+    const open = CASES.filter(c => c.status === 'open').length;
+    const b = document.getElementById('sbCB');
+    if (b) { b.textContent = open; b.classList.toggle('show', open > 0); }
+    const pg = document.querySelector('.sbi.active')?.dataset?.p;
+    if (pg === 'cases') drawCasesTable();
+    if (pg === 'dashboard') renderDash();
+  });
+}
+
+async function seedCategories() {
+  const defs = ['Compressor Failure','PCB / Electrical Issue','Refrigerant Leak','Fan Motor Problem','Noise / Vibration','Drainage Issue','Remote / Control'];
+  for (const name of defs) { const ref = await db.collection('categories').add({name, desc:'', count:0}); CATS.push({id:ref.id,name,desc:'',count:0}); }
+}
+async function seedGroups() {
+  const defs = [{name:'Bangkok HQ – QC Team',icon:'🏢'},{name:'All Offices Bulletin',icon:'📢'}];
+  for (const g of defs) { const ref = await db.collection('groups').add({...g,members:[],memberCount:1,lastMsg:'Group created',lastTs:'now',createdAt:TS()}); GROUPS.push({id:ref.id,...g,members:[],memberCount:1,lastMsg:'Group created',lastTs:'now'}); }
+}
+
+// ═══════════════════════════════════════════════════
+//  LAUNCH
+// ═══════════════════════════════════════════════════
+function launchApp() {
   document.getElementById('authScreen').classList.add('out');
   document.getElementById('app').classList.remove('hidden');
-  const init=CU.initials||(CU.firstName[0]+CU.lastName[0]).toUpperCase();
-  document.getElementById('sbAva').textContent=init;
-  document.getElementById('hAva').textContent=init;
-  document.getElementById('sbName').textContent=CU.firstName+' '+CU.lastName;
-  document.getElementById('sbRole').textContent=CU.role==='admin'?'Administrator':CU.role==='subadmin'?'Sub-Administrator':'Sales Office';
-  if(CU.role==='admin'||CU.role==='subadmin'){
-    ['sbAdSec','sbAdU','sbAdD','sbAdC'].forEach(id=>document.getElementById(id).classList.add('show'));
+  const init = CU.initials || (CU.firstName[0] + CU.lastName[0]).toUpperCase();
+  document.getElementById('sbAva').textContent = init;
+  document.getElementById('hAva').textContent  = init;
+  document.getElementById('sbName').textContent = CU.firstName + ' ' + CU.lastName;
+  document.getElementById('sbRole').textContent = CU.role==='admin'?'Administrator':CU.role==='subadmin'?'Sub-Administrator':'Sales Office';
+  if (CU.role==='admin'||CU.role==='subadmin') {
+    ['sbAdSec','sbAdU','sbAdD','sbAdC'].forEach(id => document.getElementById(id)?.classList.add('show'));
+    const pb = document.getElementById('sbPB');
+    if (pb) { pb.textContent = PENDING.length; pb.classList.toggle('show', PENDING.length > 0); }
   }
   populateNotifs();
   go('dashboard');
-  toast('Welcome back, '+CU.firstName+'! 👋','s');
+  toast('Welcome back, ' + CU.firstName + '! 👋', 's');
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  NAVIGATION
-// ══════════════════════════════════════
-const PAGE_TITLES={dashboard:'Dashboard',cases:'Quality Cases',analytics:'Analytics & Trends',map:'Site Complaint Map',groups:'Chat Groups',profile:'My Profile',adminUsers:'Users & Approvals',adminDesign:'Design System',adminCats:'Issue Categories'};
-function go(page){
-  document.querySelectorAll('.sbi').forEach(b=>b.classList.toggle('active',b.dataset.p===page));
-  document.getElementById('tbTitle').textContent=PAGE_TITLES[page]||page;
-  const area=document.getElementById('pageArea');
-  area.innerHTML=`<div class="pspin"><div class="sr"></div>Loading…</div>`;
-  // close mobile sidebar
+// ═══════════════════════════════════════════════════
+const PAGE_TITLES = {dashboard:'Dashboard',cases:'Quality Cases',analytics:'Analytics & Trends',map:'Site Map',groups:'Chat Groups',qr:'QR Access Code',profile:'My Profile',adminUsers:'Users & Approvals',adminDesign:'Design System',adminCats:'Issue Categories'};
+function go(page) {
+  document.querySelectorAll('.sbi').forEach(b => b.classList.toggle('active', b.dataset.p === page));
+  document.getElementById('tbTitle').textContent = PAGE_TITLES[page] || page;
+  document.getElementById('pageArea').innerHTML = `<div class="pspin"><div class="sr"></div>Loading…</div>`;
   document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('mobOv').style.display='none';
-  setTimeout(()=>{
-    const pages={dashboard:renderDash,cases:renderCases,analytics:renderAnalytics,map:renderMap,groups:renderGroups,profile:renderProfile,adminUsers:renderAdminUsers,adminDesign:renderAdminDesign,adminCats:renderAdminCats};
-    if(pages[page])pages[page]();
-    else area.innerHTML='<p style="padding:20px;color:var(--g600)">Page not found.</p>';
-  },120);
+  document.getElementById('mobOv').style.display = 'none';
+  setTimeout(() => ({dashboard:renderDash,cases:renderCases,analytics:renderAnalytics,map:renderMap,groups:renderGroups,qr:renderQR,profile:renderProfile,adminUsers:renderAdminUsers,adminDesign:renderAdminDesign,adminCats:renderAdminCats}[page]||function(){})(), 120);
 }
-function toggleSB(){const sb=document.getElementById('sidebar');const ov=document.getElementById('mobOv');const o=sb.classList.toggle('open');ov.style.display=o?'block':'none';}
+function toggleSB() { const s=document.getElementById('sidebar'),o=document.getElementById('mobOv'),x=s.classList.toggle('open'); o.style.display=x?'block':'none'; }
 
-// ══════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-function today(){return new Date().toISOString().slice(0,10)}
-function fmtDate(d){if(!d||d==='—')return '—';try{return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}catch{return d}}
-function nowTs(){return new Date().toISOString().slice(0,16).replace('T',' ')}
-function genId(){return 'QM-'+new Date().getFullYear()+'-'+String(CASES.length+1).padStart(3,'0')}
-function statusBadge(s){const c=(s||'').toLowerCase().replace(/\s/g,'-');return`<span class="sb2 ${c}">${(s||'').replace(/-/g,' ')}</span>`}
-function priBadge(p){return`<span class="sb2 ${p||''}">${p||'—'}</span>`}
-function canEdit(c){if(!CU)return false;return CU.role==='admin'||CU.role==='subadmin'||c.registeredBy===CU.email}
-
-// ══════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════
-function toast(msg,type='s'){
-  const icons={s:'✅',e:'❌',i:'ℹ️'};
-  const el=document.createElement('div');
-  el.className='toast'+(type==='e'?' e':type==='i'?' i':'');
-  el.innerHTML=`<span>${icons[type]||'✅'}</span><span>${msg}</span>`;
-  document.getElementById('toastWrap').appendChild(el);
-  setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0'},2800);
-  setTimeout(()=>el.remove(),3300);
-}
-
-// ══════════════════════════════════════
-//  MODAL
-// ══════════════════════════════════════
-function openModal(title,body,footer=''){
-  document.getElementById('mBox').innerHTML=`
-    <div class="mh"><div class="mt">${title}</div><button class="mc" onclick="closeModal()">×</button></div>
-    <div class="mbody" id="mBody">${body}</div>
-    ${footer?`<div class="mf">${footer}</div>`:''}`;
-  document.getElementById('mOverlay').classList.remove('hidden');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){document.getElementById('mOverlay').classList.add('hidden');document.body.style.overflow='';}
-document.addEventListener('click',e=>{if(e.target===document.getElementById('mOverlay'))closeModal();});
-
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  NOTIFICATIONS
-// ══════════════════════════════════════
-const NOTIFS=[
-  {icon:'📋',msg:'New case QM-2024-007 registered by Admin User',time:'2 minutes ago'},
-  {icon:'✅',msg:'Case QM-2024-005 has been closed',time:'2 hours ago'},
-  {icon:'👥',msg:'3 new user registrations awaiting approval',time:'5 hours ago'},
-  {icon:'📧',msg:'Email notifications sent for QM-2024-006',time:'1 day ago'}
-];
-function populateNotifs(){
-  document.getElementById('nList').innerHTML=NOTIFS.map(n=>`
-    <div class="ni"><span style="font-size:1.2rem">${n.icon}</span><div><div class="ni-msg">${n.msg}</div><div class="ni-time">${n.time}</div></div></div>`).join('');
-  document.getElementById('nDot').classList.add('show');
+// ═══════════════════════════════════════════════════
+function populateNotifs() {
+  const items = [
+    ...CASES.filter(c=>c.status==='open').slice(0,3).map(c=>({icon:'📋',msg:`Open: ${c.id} — ${(c.title||'').slice(0,35)}`,time:fmtDate(c.createdAt)})),
+    ...(PENDING.length?[{icon:'👥',msg:PENDING.length+' registration(s) awaiting approval',time:'Now'}]:[]),
+    {icon:'🔥',msg:'Firebase connected — all data saves permanently',time:'System'}
+  ];
+  document.getElementById('nList').innerHTML = items.map(n=>`<div class="ni"><span style="font-size:1.2rem">${n.icon}</span><div><div class="ni-msg">${n.msg}</div><div class="ni-time">${n.time}</div></div></div>`).join('');
+  if (items.length) document.getElementById('nDot').classList.add('show');
 }
-function toggleNP(){
-  const p=document.getElementById('notifPanel');
-  p.classList.toggle('hidden');
-}
-document.addEventListener('click',e=>{
-  const p=document.getElementById('notifPanel');const btn=document.getElementById('nBtn');
-  if(p&&btn&&!p.contains(e.target)&&!btn.contains(e.target))p.classList.add('hidden');
+function toggleNP() { document.getElementById('notifPanel').classList.toggle('hidden'); }
+document.addEventListener('click', e => {
+  const p=document.getElementById('notifPanel'),b=document.getElementById('nBtn');
+  if(p&&b&&!p.contains(e.target)&&!b.contains(e.target)) p.classList.add('hidden');
 });
 
-// ══════════════════════════════════════
-//  FILE HANDLING
-// ══════════════════════════════════════
-function setupDZ(zoneId,inputId,listId){
-  const zone=document.getElementById(zoneId);const inp=document.getElementById(inputId);
-  if(!zone||!inp)return;
-  zone.onclick=()=>inp.click();
-  zone.ondragover=e=>{e.preventDefault();zone.classList.add('ov')};
-  zone.ondragleave=()=>zone.classList.remove('ov');
-  zone.ondrop=e=>{e.preventDefault();zone.classList.remove('ov');addFiles(e.dataTransfer.files,listId)};
-  inp.onchange=()=>addFiles(inp.files,listId);
+// ═══════════════════════════════════════════════════
+//  FILE HELPERS
+// ═══════════════════════════════════════════════════
+function setupDZ(zid, iid, lid) {
+  const z=document.getElementById(zid), inp=document.getElementById(iid);
+  if (!z||!inp) return;
+  z.onclick = () => inp.click();
+  z.ondragover = e => { e.preventDefault(); z.classList.add('ov'); };
+  z.ondragleave = () => z.classList.remove('ov');
+  z.ondrop = e => { e.preventDefault(); z.classList.remove('ov'); addFiles(e.dataTransfer.files, lid); };
+  inp.onchange = () => addFiles(inp.files, lid);
 }
-function addFiles(files,listId){
-  const list=document.getElementById(listId);
-  const icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️',gif:'🖼️'};
-  Array.from(files).forEach(f=>{
+function addFiles(files, lid) {
+  const list=document.getElementById(lid);
+  const icons={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',jpg:'🖼️',jpeg:'🖼️',png:'🖼️'};
+  Array.from(files).forEach(f => {
     const ext=f.name.split('.').pop().toLowerCase();
-    const el=document.createElement('div');
-    el.className='fi';el.dataset.fn=f.name;
+    const el=document.createElement('div'); el.className='fi'; el.dataset.fn=f.name;
     el.innerHTML=`<span>${icons[ext]||'📎'}</span><span class="fn">${f.name}</span><span style="font-size:.71rem;color:var(--g400)">${(f.size/1024).toFixed(0)} KB</span><button class="frm" onclick="this.closest('.fi').remove()">✕</button>`;
     list.appendChild(el);
   });
 }
-function getFiles(listId){return Array.from(document.querySelectorAll(`#${listId} .fi`)).map(el=>el.dataset.fn)}
+function getFiles(lid) { return Array.from(document.querySelectorAll(`#${lid} .fi`)).map(e => e.dataset.fn); }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  QR CODE PAGE
+// ═══════════════════════════════════════════════════
+function renderQR() {
+  const url = window.location.href.split('?')[0].split('#')[0];
+  const firebaseUrl  = 'https://me-qms.web.app';
+  const githubUrl    = url.includes('github.io') ? url : 'https://your-username.github.io/me-qms/';
+  const netlifyUrl   = url.includes('netlify.app') ? url : url;
+
+  document.getElementById('pageArea').innerHTML = `
+  <div style="max-width:900px">
+    <div class="hero-banner" style="margin-bottom:24px">
+      <h2>📱 Scan to Access ME-QMS</h2>
+      <p>Share QR codes with your team for instant mobile access</p>
+    </div>
+    <div class="cgrid2" style="margin-bottom:18px">
+      <div class="qr-card">
+        <h3>🌐 This Website</h3>
+        <p>Current URL — scan to open on any device</p>
+        <div id="qrcode"></div>
+        <div class="qr-url">${url}</div>
+        <button class="btn btn-r btn-sm" style="margin-top:12px" onclick="downloadQR('qrcode','ME-QMS-QR.png')">⬇️ Download QR</button>
+      </div>
+      <div class="qr-card">
+        <h3>🔥 Firebase Hosting URL</h3>
+        <p>After deploying to Firebase Hosting</p>
+        <div id="qrcode2"></div>
+        <div class="qr-url">${firebaseUrl}</div>
+        <button class="btn btn-r btn-sm" style="margin-top:12px" onclick="downloadQR('qrcode2','ME-QMS-Firebase-QR.png')">⬇️ Download QR</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">Custom QR Code Generator</div></div>
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+        <div class="fgroup" style="flex:1;min-width:250px;margin:0">
+          <label>Enter any URL</label>
+          <input class="finput" id="customUrl" placeholder="https://your-site.com" value="${url}">
+        </div>
+        <button class="btn btn-r" onclick="generateCustomQR()">Generate QR</button>
+      </div>
+      <div id="customQRWrap" style="margin-top:20px;text-align:center">
+        <div id="qrcode3" style="display:inline-block;padding:12px;background:#fff;border-radius:var(--r);border:2px solid var(--g200)"></div>
+        <br><button class="btn btn-o btn-sm" style="margin-top:10px" onclick="downloadQR('qrcode3','ME-QMS-Custom-QR.png')">⬇️ Download QR</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <div class="card-hdr"><div class="card-title">🚀 Deploy to Firebase Hosting (Free)</div></div>
+      <div style="font-size:.88rem;line-height:1.8;color:var(--g700)">
+        <p style="margin-bottom:10px">Host this file on Firebase for a permanent URL like <code style="background:var(--g100);padding:2px 6px;border-radius:4px;color:var(--red)">https://me-qms.web.app</code></p>
+        <div style="background:var(--g100);border-radius:var(--r);padding:14px;font-family:monospace;font-size:.82rem;line-height:2">
+          <div style="color:var(--g400)"># Install Firebase CLI (one time)</div>
+          <div>npm install -g firebase-tools</div>
+          <div style="color:var(--g400);margin-top:6px"># Login to Firebase</div>
+          <div>firebase login</div>
+          <div style="color:var(--g400);margin-top:6px"># In your project folder</div>
+          <div>firebase init hosting</div>
+          <div style="color:var(--g400);margin-top:6px"># Deploy</div>
+          <div>firebase deploy</div>
+        </div>
+        <p style="margin-top:12px;color:var(--g600);font-size:.83rem">Or simply drag this file to <a href="https://app.netlify.com/drop" target="_blank" style="color:var(--red)">app.netlify.com/drop</a> for instant free hosting!</p>
+      </div>
+    </div>
+  </div>`;
+
+  // Generate QR codes after DOM is ready
+  setTimeout(() => {
+    makeQR('qrcode', url, 200);
+    makeQR('qrcode2', firebaseUrl, 200);
+    makeQR('qrcode3', url, 180);
+  }, 100);
+}
+
+function makeQR(elementId, url, size) {
+  const el = document.getElementById(elementId);
+  if (!el || !window.QRCode) return;
+  el.innerHTML = '';
+  try {
+    new QRCode(el, { text: url, width: size, height: size, colorDark:'#111111', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.H });
+  } catch(e) { el.innerHTML = `<p style="font-size:.8rem;color:var(--g600);padding:20px">QR: ${url}</p>`; }
+}
+
+function generateCustomQR() {
+  const url = document.getElementById('customUrl')?.value.trim();
+  if (!url) { toast('Please enter a URL', 'e'); return; }
+  document.getElementById('qrcode3').innerHTML = '';
+  makeQR('qrcode3', url, 180);
+  toast('QR code generated!', 's');
+}
+
+function downloadQR(elementId, filename) {
+  const el = document.getElementById(elementId);
+  const img = el?.querySelector('img') || el?.querySelector('canvas');
+  if (!img) { toast('QR code not ready yet', 'e'); return; }
+  const a = document.createElement('a');
+  if (img.tagName === 'CANVAS') { a.href = img.toDataURL('image/png'); }
+  else { a.href = img.src; }
+  a.download = filename || 'QR-Code.png';
+  a.click();
+  toast('QR Code downloaded!', 's');
+}
+
+// ═══════════════════════════════════════════════════
 //  DASHBOARD
-// ══════════════════════════════════════
-function renderDash(){
-  const byStatus={open:0,'in-progress':0,closed:0,pending:0};
-  CASES.forEach(c=>byStatus[c.status]=(byStatus[c.status]||0)+1);
-  const byCat={};CASES.forEach(c=>byCat[c.category]=(byCat[c.category]||0)+1);
+// ═══════════════════════════════════════════════════
+function renderDash() {
+  const bs={open:0,'in-progress':0,closed:0,pending:0};
+  CASES.forEach(c => bs[c.status] = (bs[c.status]||0)+1);
+  const bc={}; CASES.forEach(c => bc[c.category] = (bc[c.category]||0)+1);
   document.getElementById('pageArea').innerHTML=`
   <div class="stats-grid">
-    <div class="sc cr"><div class="si">📋</div><div><div class="sl">Total Cases</div><div class="sv">${CASES.length}</div><div class="ss">All time</div></div></div>
-    <div class="sc ca"><div class="si">🔴</div><div><div class="sl">Open</div><div class="sv">${byStatus.open}</div><div class="ss">Needs attention</div></div></div>
-    <div class="sc cb"><div class="si">🔄</div><div><div class="sl">In Progress</div><div class="sv">${byStatus['in-progress']}</div><div class="ss">Being handled</div></div></div>
-    <div class="sc cg"><div class="si">✅</div><div><div class="sl">Closed</div><div class="sv">${byStatus.closed}</div><div class="ss">Resolved</div></div></div>
+    <div class="sc cr"><div class="si">📋</div><div><div class="sl">Total Cases</div><div class="sv">${CASES.length}</div><div class="ss">✅ Saved in Firebase</div></div></div>
+    <div class="sc ca"><div class="si">🔴</div><div><div class="sl">Open</div><div class="sv">${bs.open}</div><div class="ss">Needs attention</div></div></div>
+    <div class="sc cb"><div class="si">🔄</div><div><div class="sl">In Progress</div><div class="sv">${bs['in-progress']}</div><div class="ss">Being handled</div></div></div>
+    <div class="sc cg"><div class="si">✅</div><div><div class="sl">Closed</div><div class="sv">${bs.closed}</div><div class="ss">Resolved</div></div></div>
   </div>
   <div class="cgrid2">
-    <div class="card"><div class="card-hdr"><div class="card-title">Cases by Month</div><div class="tgrp"><button class="tgb active">6M</button><button class="tgb" onclick="toast('Showing 1Y data','i')">1Y</button></div></div><div class="cw"><canvas id="cMonth"></canvas></div></div>
-    <div class="card"><div class="card-hdr"><div class="card-title">By Category</div></div><div class="cw"><canvas id="cCat"></canvas></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Cases by Month (Live)</div></div><div class="cw"><canvas id="cM"></canvas></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">By Category</div></div><div class="cw"><canvas id="cC"></canvas></div></div>
   </div>
   <div class="card" style="margin-top:18px">
     <div class="card-hdr"><div class="card-title">Recent Cases</div><button class="btn btn-r btn-sm" onclick="go('cases')">View All →</button></div>
-    <div class="tw">${recentTable()}</div>
+    <div class="tw">${recentTbl()}</div>
   </div>`;
-  const badge=document.getElementById('sbCB');
-  if(badge){badge.textContent=byStatus.open;badge.classList.toggle('show',byStatus.open>0);}
-  Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
-  new Chart(document.getElementById('cMonth'),{type:'bar',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Cases',data:[6,9,5,12,8,7],backgroundColor:'#e60012',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
-  const ce=Object.entries(byCat);
-  new Chart(document.getElementById('cCat'),{type:'doughnut',data:{labels:ce.map(e=>e[0]),datasets:[{data:ce.map(e=>e[1]),backgroundColor:['#e60012','#111','#555','#888','#bbb','#d0d0d0','#e8e8e8'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}}}});
+  Chart.defaults.font.family = "'IBM Plex Sans',sans-serif";
+  const now=new Date(); const last6=[];
+  for(let i=5;i>=0;i--){ const d=new Date(now.getFullYear(),now.getMonth()-i,1); last6.push({label:d.toLocaleString('default',{month:'short'}),key:d.toISOString().slice(0,7)}); }
+  const mm={}; CASES.forEach(c=>{ const m=(c.createdAt||'').slice(0,7); if(m) mm[m]=(mm[m]||0)+1; });
+  new Chart(document.getElementById('cM'),{type:'bar',data:{labels:last6.map(x=>x.label),datasets:[{label:'Cases',data:last6.map(x=>mm[x.key]||0),backgroundColor:'#e60012',borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+  const ce=Object.entries(bc);
+  if(ce.length) new Chart(document.getElementById('cC'),{type:'doughnut',data:{labels:ce.map(e=>e[0]),datasets:[{data:ce.map(e=>e[1]),backgroundColor:['#e60012','#111','#555','#888','#bbb','#d0d0d0','#e8e8e8'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}}}});
 }
-function recentTable(){
-  const rows=CASES.slice(0,6).map(c=>`<tr><td><a class="tl" onclick="openDetail('${c.id}')">${c.id}</a></td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.title}</td><td style="font-size:.79rem">${c.office.replace(' Office','').replace(' Head','')}</td><td>${statusBadge(c.status)}</td><td style="font-size:.79rem">${fmtDate(c.createdAt)}</td></tr>`).join('');
-  return`<table><thead><tr><th>Case #</th><th>Title</th><th>Office</th><th>Status</th><th>Date</th></tr></thead><tbody>${rows}</tbody></table>`;
+function recentTbl() {
+  if (!CASES.length) return '<p style="padding:16px;color:var(--g600);font-size:.87rem">No cases yet. Register your first case! ⬆️</p>';
+  return `<table><thead><tr><th>Case #</th><th>Title</th><th>Office</th><th>Status</th><th>Date</th></tr></thead><tbody>
+  ${CASES.slice(0,6).map(c=>`<tr><td><a class="tl" onclick="openDetail('${c.id}')">${c.id}</a></td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.title}</td><td style="font-size:.79rem">${(c.office||'').replace(' Office','').replace(' Head','')}</td><td>${statusBadge(c.status)}</td><td style="font-size:.79rem">${fmtDate(c.createdAt)}</td></tr>`).join('')}
+  </tbody></table>`;
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  CASES
-// ══════════════════════════════════════
-function renderCases(){
-  filteredCases=[...CASES];
+// ═══════════════════════════════════════════════════
+function renderCases() {
+  filteredCases = [...CASES];
   document.getElementById('pageArea').innerHTML=`
   <div class="fb">
     <div class="sw"><input type="text" class="si2" id="cSrch" placeholder="Search case, model, serial, customer…" oninput="filterC()"></div>
@@ -700,26 +817,24 @@ function renderCases(){
       <button class="eb" onclick="expXLS()">📊 XLS</button>
       <button class="eb" onclick="expPDF()">📄 PDF</button>
       <button class="eb" onclick="expCSV()">📋 CSV</button>
-      <button class="eb" onclick="toast('Generating Word doc…','i')">📝 DOC</button>
     </div>
   </div>
   <div class="card"><div class="card-hdr"><div class="card-title">Quality Cases</div><span id="cCount" style="font-size:.81rem;color:var(--g600)"></span></div><div class="tw" id="cTbl"></div></div>`;
   drawCasesTable();
 }
-function drawCasesTable(){
-  const el=document.getElementById('cTbl');const cnt=document.getElementById('cCount');
-  if(cnt)cnt.textContent=filteredCases.length+' case'+(filteredCases.length===1?'':'s');
-  if(!el)return;
-  if(!filteredCases.length){el.innerHTML='<p style="padding:20px;color:var(--g600);font-size:.87rem">No cases found.</p>';return;}
+function drawCasesTable() {
+  const el=document.getElementById('cTbl'), cnt=document.getElementById('cCount');
+  if(cnt) cnt.textContent = filteredCases.length + ' case' + (filteredCases.length===1?'':'s');
+  if(!el) return;
+  if(!filteredCases.length){el.innerHTML='<p style="padding:20px;color:var(--g600)">No cases found.</p>';return;}
   el.innerHTML=`<table><thead><tr><th>Case #</th><th>Title</th><th>Office</th><th>Category</th><th>Model</th><th>Status</th><th>Priority</th><th>Date</th><th>Actions</th></tr></thead><tbody>
   ${filteredCases.map(c=>`<tr>
     <td><a class="tl" onclick="openDetail('${c.id}')">${c.id}</a></td>
     <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${c.title}">${c.title}</td>
-    <td style="font-size:.79rem;white-space:nowrap">${c.office.replace(' Office','').replace(' Head','')}</td>
-    <td style="font-size:.79rem">${c.category}</td>
-    <td style="font-size:.77rem;font-family:monospace">${c.model}</td>
-    <td>${statusBadge(c.status)}</td>
-    <td>${priBadge(c.priority)}</td>
+    <td style="font-size:.79rem;white-space:nowrap">${(c.office||'').replace(' Office','').replace(' Head','')}</td>
+    <td style="font-size:.79rem">${c.category||'—'}</td>
+    <td style="font-size:.77rem;font-family:monospace">${c.model||'—'}</td>
+    <td>${statusBadge(c.status)}</td><td>${priBadge(c.priority)}</td>
     <td style="font-size:.79rem;white-space:nowrap">${fmtDate(c.createdAt)}</td>
     <td style="white-space:nowrap">
       <button class="btn btn-o btn-sm" onclick="openDetail('${c.id}')">View</button>
@@ -727,7 +842,7 @@ function drawCasesTable(){
     </td>
   </tr>`).join('')}</tbody></table>`;
 }
-function filterC(){
+function filterC() {
   const q=(document.getElementById('cSrch')?.value||'').toLowerCase();
   const st=document.getElementById('fSt')?.value||'';
   const of=document.getElementById('fOf')?.value||'';
@@ -739,17 +854,17 @@ function filterC(){
   drawCasesTable();
 }
 
-// ── NEW CASE MODAL ──
-async function openNewCase(){
-  const catOpts=CATS.map(c=>`<option>${c.name}</option>`).join('');
-  openModal('＋ Register New Quality Case',`
+async function openNewCase() {
+  const catOpts = CATS.map(c=>`<option>${c.name}</option>`).join('');
+  const caseNum = genId();
+  openModal('＋ Register New Quality Case', `
   <div class="sec-title">Case Information</div>
   <div class="fg">
-    <div class="fgroup"><label>Case Number</label><input class="finput" id="nc0" value="${genId()}" readonly style="background:var(--g100)"></div>
-    <div class="fgroup"><label>Sales Office *</label><select class="finput" id="nc1"><option>Bangkok Head Office</option><option>Chiang Mai Office</option><option>Phuket Office</option><option>Pattaya Office</option></select></div>
+    <div class="fgroup"><label>Case Number</label><input class="finput" id="nc0" value="${caseNum}" readonly style="background:var(--g100)"></div>
+    <div class="fgroup"><label>Sales Office *</label><select class="finput" id="nc1"><option>Bangkok Head Office</option><option>Chiang Mai Office</option><option>Phuket Office</option><option>Pattaya Office</option><option>Hat Yai Office</option></select></div>
     <div class="fgroup ff"><label>Case Title *</label><input class="finput" id="nc2" placeholder="Brief description of the quality issue"></div>
     <div class="fgroup"><label>Issue Category *</label><select class="finput" id="nc3">${catOpts}</select></div>
-    <div class="fgroup"><label>Priority</label><select class="finput" id="nc4"><option>High</option><option>Medium</option><option>Low</option></select></div>
+    <div class="fgroup"><label>Priority</label><select class="finput" id="nc4"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
   </div>
   <div class="sec-title" style="margin-top:18px">Dates</div>
   <div class="fg">
@@ -762,251 +877,240 @@ async function openNewCase(){
   <div id="ncUnits">
     <div class="ur"><select class="finput" style="max-width:115px;flex-shrink:0"><option>Indoor</option><option>Outdoor</option></select><input class="finput" placeholder="Model (e.g. MSZ-GE25VA)"><input class="finput" placeholder="Serial number"><button style="background:none;border:none;color:var(--g400);font-size:1.1rem" onclick="this.closest('.ur').remove()">✕</button></div>
   </div>
-  <button class="aub" style="margin-top:6px" onclick="addUR()">＋ Add Unit</button>
+  <button class="aub" style="margin-top:6px" onclick="addUR()">＋ Add Another Unit</button>
   <div class="sec-title" style="margin-top:18px">Customer &amp; Location</div>
   <div class="fg">
     <div class="fgroup"><label>Customer Name</label><input class="finput" id="nc8" placeholder="Customer / Project name"></div>
-    <div class="fgroup"><label>Contact</label><input class="finput" id="nc9" placeholder="+66 xx xxx xxxx"></div>
-    <div class="fgroup ff"><label>Site Address (pins to map)</label><input class="finput" id="nc10" placeholder="Full address"></div>
+    <div class="fgroup"><label>Contact Number</label><input class="finput" id="nc9" placeholder="+66 xx xxx xxxx"></div>
+    <div class="fgroup ff"><label>Site Address</label><input class="finput" id="nc10" placeholder="Full address, City, Province, PostCode"></div>
   </div>
   <div class="sec-title" style="margin-top:18px">Issue Description *</div>
   <div class="fgroup"><textarea class="finput" id="nc11" rows="4" placeholder="Describe the quality issue in detail…"></textarea></div>
-  <div class="sec-title" style="margin-top:18px">Attachments &amp; Part Return Docs</div>
-  <div class="dz" id="ncDZ"><div class="dz-icon">📎</div><div class="dz-txt">Drop files here or click to upload</div><div class="dz-sub">PDF, DOC, XLS, JPG, PNG – any format</div></div>
+  <div class="sec-title" style="margin-top:18px">Attachments &amp; Part Return Documents</div>
+  <div class="dz" id="ncDZ"><div class="dz-icon">📎</div><div class="dz-txt">Drop files or click to upload</div><div class="dz-sub">PDF, DOC, XLS, JPG, PNG</div></div>
   <input type="file" id="ncFI" multiple style="display:none">
   <div class="fl" id="ncFL"></div>
   <div id="ncErr" class="auth-err hidden" style="margin-top:12px"></div>`,
   `<button class="btn btn-o" onclick="closeModal()">Cancel</button>
-   <button class="btn btn-r" onclick="submitCase()">💾 Save &amp; Notify Team</button>`);
+   <button class="btn btn-r" id="ncBtn" onclick="submitCase('${caseNum}')">💾 Save to Firebase</button>`);
   setupDZ('ncDZ','ncFI','ncFL');
 }
-function addUR(){
-  const list=document.getElementById('ncUnits');
-  const r=document.createElement('div');r.className='ur';
+
+function addUR() {
+  const r=document.createElement('div'); r.className='ur';
   r.innerHTML=`<select class="finput" style="max-width:115px;flex-shrink:0"><option>Indoor</option><option>Outdoor</option></select><input class="finput" placeholder="Model name"><input class="finput" placeholder="Serial number"><button style="background:none;border:none;color:var(--g400);font-size:1.1rem" onclick="this.closest('.ur').remove()">✕</button>`;
-  list.appendChild(r);
+  document.getElementById('ncUnits').appendChild(r);
 }
-function submitCase(){
-  const id=document.getElementById('nc0')?.value;
+
+async function submitCase(caseNum) {
   const title=document.getElementById('nc2')?.value.trim();
   const occ=document.getElementById('nc6')?.value;
   const comp=document.getElementById('nc7')?.value;
   const desc=document.getElementById('nc11')?.value.trim();
-  const errEl=document.getElementById('ncErr');
-  if(!title||!occ||!comp||!desc){errEl.textContent='Please fill in: Title, Occurrence Date, Complaint Date, Description.';errEl.classList.remove('hidden');return;}
-  const units=Array.from(document.querySelectorAll('#ncUnits .ur')).map(r=>{
-    const ins=r.querySelectorAll('.finput,select');
-    return{type:ins[0]?.value||'Indoor',model:ins[1]?.value||'',serial:ins[2]?.value||''};
-  });
-  const nc={
-    id,title,category:document.getElementById('nc3')?.value,office:document.getElementById('nc1')?.value,
-    priority:document.getElementById('nc4')?.value,status:'open',
-    model:units[0]?.model||'',serial:units[0]?.serial||'',
-    model2:units[1]?.model||'',serial2:units[1]?.serial||'',units,
-    customer:document.getElementById('nc8')?.value||'',phone:document.getElementById('nc9')?.value||'',
-    address:document.getElementById('nc10')?.value||'',installDate:document.getElementById('nc5')?.value||'',
-    occurrenceDate:occ,complaintDate:comp,description:desc,
-    registeredBy:CU.email,createdAt:today(),updatedAt:today(),files:getFiles('ncFL'),chat:[]
+  const err=document.getElementById('ncErr');
+  if(!title||!occ||!comp||!desc){err.textContent='Fill in: Title, Occurrence Date, Complaint Date, Description.';err.classList.remove('hidden');return;}
+  const btn=document.getElementById('ncBtn'); if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  const units=Array.from(document.querySelectorAll('#ncUnits .ur')).map(r=>{const i=r.querySelectorAll('.finput,select');return{type:i[0]?.value||'Indoor',model:i[1]?.value||'',serial:i[2]?.value||''};});
+  const data={
+    id:caseNum,title,
+    category:document.getElementById('nc3')?.value, office:document.getElementById('nc1')?.value,
+    priority:document.getElementById('nc4')?.value, status:'open',
+    model:units[0]?.model||'', serial:units[0]?.serial||'',
+    model2:units[1]?.model||'', serial2:units[1]?.serial||'', units,
+    customer:document.getElementById('nc8')?.value||'', phone:document.getElementById('nc9')?.value||'',
+    address:document.getElementById('nc10')?.value||'', installDate:document.getElementById('nc5')?.value||'',
+    occurrenceDate:occ, complaintDate:comp, description:desc,
+    registeredBy:CU.email, registeredByName:CU.firstName+' '+CU.lastName,
+    createdAt:TS(), updatedAt:TS(), files:getFiles('ncFL'), chat:[]
   };
-  CASES.unshift(nc);
-  closeModal();
-  toast('Case '+id+' registered! Team notified.','s');
-  renderCases();
+  try {
+    await db.collection('cases').doc(caseNum).set(data);
+    closeModal();
+    toast('✅ Case '+caseNum+' saved to Firebase permanently!','s');
+  } catch(e) { err.textContent='Save failed: '+e.message; err.classList.remove('hidden'); if(btn){btn.disabled=false;btn.textContent='💾 Save to Firebase';} }
 }
 
-// ── CASE DETAIL ──
-function openDetail(id){
-  const c=CASES.find(x=>x.id===id);
-  if(!c){toast('Case not found','e');return;}
-  const chatHTML=(c.chat||[]).map(m=>{
-    const own=m.email===CU?.email;
-    return`<div class="cm ${own?'own':'oth'}"><div class="cm-hdr"><span>${m.by}</span><span>${m.ts}</span></div><div class="cb">${m.msg}</div></div>`;
-  }).join('');
+function openDetail(id) {
+  const c=CASES.find(x=>x.id===id); if(!c){toast('Case not found','e');return;}
+  const chatHTML=(c.chat||[]).map(m=>{const own=m.email===CU?.email;return`<div class="cm ${own?'own':'oth'}"><div class="cm-hdr" ${own?'style="justify-content:flex-end"':''}><span>${m.by}</span><span>${m.ts}</span></div><div class="cb">${m.msg}</div></div>`;}).join('');
   const units=c.units||[{type:'Indoor',model:c.model,serial:c.serial}];
-  const uRows=units.map((u,i)=>`<tr><td>${i+1}</td><td>${u.type||'Indoor'}</td><td>${u.model||c.model||'—'}</td><td style="font-family:monospace;font-size:.8rem">${u.serial||c.serial||'—'}</td></tr>`).join('');
-  const fHTML=(c.files||[]).length?(c.files.map(f=>`<div class="fi"><span>📎</span><span class="fn">${f}</span></div>`).join('')):'<p style="font-size:.82rem;color:var(--g600)">No attachments</p>';
+  const uRows=units.map((u,i)=>`<tr><td>${i+1}</td><td>${u.type||'Indoor'}</td><td>${u.model||'—'}</td><td style="font-family:monospace;font-size:.8rem">${u.serial||'—'}</td></tr>`).join('');
+  const fHTML=(c.files||[]).length?c.files.map(f=>`<div class="fi"><span>📎</span><span class="fn">${f}</span></div>`).join(''):'<p style="font-size:.82rem;color:var(--g600)">No attachments</p>';
   openModal(`<span style="color:var(--red)">${c.id}</span> — ${c.title}`,`
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;font-size:.84rem">
-    <div><b>Status</b><br>${statusBadge(c.status)}</div>
-    <div><b>Priority</b><br>${priBadge(c.priority)}</div>
-    <div><b>Office</b><br>${c.office}</div>
-    <div><b>Category</b><br>${c.category}</div>
-    <div><b>Customer</b><br>${c.customer||'—'}</div>
-    <div><b>Address</b><br><span style="font-size:.8rem">${c.address||'—'}</span></div>
-    <div><b>Occurrence</b><br>${fmtDate(c.occurrenceDate)}</div>
-    <div><b>Complaint</b><br>${fmtDate(c.complaintDate)}</div>
-    <div><b>Install Date</b><br>${fmtDate(c.installDate)}</div>
-    <div><b>Registered</b><br>${fmtDate(c.createdAt)}</div>
+    <div><b>Status</b><br>${statusBadge(c.status)}</div><div><b>Priority</b><br>${priBadge(c.priority)}</div>
+    <div><b>Office</b><br>${c.office||'—'}</div><div><b>Category</b><br>${c.category||'—'}</div>
+    <div><b>Customer</b><br>${c.customer||'—'}</div><div><b>Address</b><br><span style="font-size:.8rem">${c.address||'—'}</span></div>
+    <div><b>Occurrence</b><br>${fmtDate(c.occurrenceDate)}</div><div><b>Complaint</b><br>${fmtDate(c.complaintDate)}</div>
+    <div><b>Install Date</b><br>${fmtDate(c.installDate)}</div><div><b>Registered By</b><br>${c.registeredByName||c.registeredBy||'—'}</div>
   </div>
   <div class="sec-title">Product Units</div>
   <div class="tw" style="margin-bottom:16px"><table><thead><tr><th>#</th><th>Type</th><th>Model</th><th>Serial</th></tr></thead><tbody>${uRows}</tbody></table></div>
   <div class="sec-title">Issue Description</div>
-  <p style="font-size:.87rem;line-height:1.6;margin-bottom:16px;color:var(--g700)">${c.description||'—'}</p>
+  <p style="font-size:.87rem;line-height:1.6;margin-bottom:16px;color:var(--g700);white-space:pre-wrap">${c.description||'—'}</p>
   <div class="sec-title">Attachments</div>
   <div class="fl" style="margin-bottom:16px">${fHTML}</div>
   <div class="sec-title">Status Updates &amp; Chat</div>
   <div class="chat-box">
     <div class="chat-msgs" id="dtChat">${chatHTML||'<p style="text-align:center;color:var(--g400);font-size:.83rem;padding:20px">No messages yet.</p>'}</div>
     <div class="ci-bar">
-      <button class="ca2" title="Attach image" onclick="document.getElementById('dtImg').click()">📎</button>
+      <button class="ca2" onclick="document.getElementById('dtImg').click()">📎</button>
       <input type="file" id="dtImg" accept="image/*" style="display:none" onchange="sendChatImg('${c.id}',this)">
-      <input class="ct" id="dtIn" placeholder="Type update or message… (Enter to send)" onkeydown="if(event.key==='Enter')sendChat('${c.id}')">
+      <input class="ct" id="dtIn" placeholder="Type update… (Enter to send)" onkeydown="if(event.key==='Enter')sendChat('${c.id}')">
       <button class="cs" onclick="sendChat('${c.id}')">➤</button>
     </div>
   </div>`,
   canEdit(c)?`
-    <select class="fsel" id="dtSt">
-      ${['open','in-progress','pending','closed'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}
-    </select>
+    <select class="fsel" id="dtSt">${['open','in-progress','pending','closed'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select>
     <button class="btn btn-o" onclick="closeModal()">Close</button>
     <button class="btn btn-r" onclick="saveStatus('${c.id}')">Update Status</button>`
   :`<button class="btn btn-o" onclick="closeModal()">Close</button>`);
-  setTimeout(()=>{const m=document.getElementById('dtChat');if(m)m.scrollTop=m.scrollHeight},60);
+  setTimeout(()=>{const m=document.getElementById('dtChat');if(m)m.scrollTop=m.scrollHeight;},60);
 }
-function sendChat(cid){
-  const inp=document.getElementById('dtIn');
-  if(!inp?.value.trim())return;
+
+async function sendChat(cid) {
+  const inp=document.getElementById('dtIn'); if(!inp?.value.trim())return;
   const entry={by:CU.firstName+' '+CU.lastName,email:CU.email,msg:inp.value.trim(),ts:nowTs()};
-  const c=CASES.find(x=>x.id===cid);if(c){c.chat.push(entry);c.updatedAt=today();}
-  const msgs=document.getElementById('dtChat');
-  const el=document.createElement('div');el.className='cm own';
-  el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>${entry.by}</span><span>${entry.ts}</span></div><div class="cb">${entry.msg}</div>`;
-  msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;inp.value='';
-}
-function sendChatImg(cid,input){
-  if(!input.files[0])return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const entry={by:CU.firstName+' '+CU.lastName,email:CU.email,msg:'[Photo]',ts:nowTs()};
-    const c=CASES.find(x=>x.id===cid);if(c)c.chat.push(entry);
+  try {
+    await db.collection('cases').doc(cid).update({chat:firebase.firestore.FieldValue.arrayUnion(entry),updatedAt:TS()});
     const msgs=document.getElementById('dtChat');
     const el=document.createElement('div');el.className='cm own';
-    el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>${entry.by}</span><span>${entry.ts}</span></div><div class="cb"><img src="${e.target.result}" alt="Photo"></div>`;
+    el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>${entry.by}</span><span>${entry.ts}</span></div><div class="cb">${entry.msg}</div>`;
+    msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;inp.value='';
+  } catch(e){toast('Send failed: '+e.message,'e');}
+}
+
+async function sendChatImg(cid,input) {
+  if(!input.files[0])return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const entry={by:CU.firstName+' '+CU.lastName,email:CU.email,msg:'[Photo shared]',ts:nowTs()};
+    await db.collection('cases').doc(cid).update({chat:firebase.firestore.FieldValue.arrayUnion(entry),updatedAt:TS()});
+    const msgs=document.getElementById('dtChat');
+    const el=document.createElement('div');el.className='cm own';
+    el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>${entry.by}</span><span>${entry.ts}</span></div><div class="cb"><img src="${e.target.result}" alt="Photo" style="max-width:180px;border-radius:8px"></div>`;
     msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;
   };
   reader.readAsDataURL(input.files[0]);
 }
-function saveStatus(id){
-  const st=document.getElementById('dtSt')?.value;if(!st)return;
-  const c=CASES.find(x=>x.id===id);if(c){c.status=st;c.updatedAt=today();}
-  closeModal();toast('Case status updated to "'+st+'"','s');renderCases();
+
+async function saveStatus(id) {
+  const st=document.getElementById('dtSt')?.value; if(!st)return;
+  await db.collection('cases').doc(id).update({status:st,updatedAt:TS()});
+  closeModal();toast('Status updated and saved to Firebase!','s');
 }
-function openEditCase(id){
+
+function openEditCase(id) {
   const c=CASES.find(x=>x.id===id);if(!c)return;
   openModal('✏️ Edit — '+id,`
   <div class="fgroup"><label>Title</label><input class="finput" id="ec1" value="${c.title}"></div>
   <div class="fg">
     <div class="fgroup"><label>Status</label><select class="finput" id="ec2">${['open','in-progress','pending','closed'].map(s=>`<option ${c.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
     <div class="fgroup"><label>Priority</label><select class="finput" id="ec3">${['High','Medium','Low'].map(p=>`<option ${c.priority===p?'selected':''}>${p}</option>`).join('')}</select></div>
-    <div class="fgroup ff"><label>Customer Name</label><input class="finput" id="ec4" value="${c.customer||''}"></div>
+    <div class="fgroup ff"><label>Customer</label><input class="finput" id="ec4" value="${c.customer||''}"></div>
     <div class="fgroup ff"><label>Address</label><input class="finput" id="ec5" value="${c.address||''}"></div>
     <div class="fgroup ff"><label>Description</label><textarea class="finput" id="ec6" rows="4">${c.description||''}</textarea></div>
   </div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveEdit('${id}')">Save Changes</button>`);
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveEdit('${id}')">Save to Firebase</button>`);
 }
-function saveEdit(id){
-  const c=CASES.find(x=>x.id===id);if(!c)return;
-  c.title=document.getElementById('ec1')?.value||c.title;
-  c.status=document.getElementById('ec2')?.value||c.status;
-  c.priority=document.getElementById('ec3')?.value||c.priority;
-  c.customer=document.getElementById('ec4')?.value||c.customer;
-  c.address=document.getElementById('ec5')?.value||c.address;
-  c.description=document.getElementById('ec6')?.value||c.description;
-  c.updatedAt=today();
-  closeModal();toast('Case updated!','s');renderCases();
+async function saveEdit(id) {
+  const updates={title:document.getElementById('ec1')?.value,status:document.getElementById('ec2')?.value,priority:document.getElementById('ec3')?.value,customer:document.getElementById('ec4')?.value,address:document.getElementById('ec5')?.value,description:document.getElementById('ec6')?.value,updatedAt:TS()};
+  await db.collection('cases').doc(id).update(updates);
+  closeModal();toast('Case updated and saved to Firebase! ✅','s');
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  ANALYTICS
-// ══════════════════════════════════════
-let acharts={};
-function renderAnalytics(){
-  const byStatus={open:0,'in-progress':0,closed:0,pending:0};
-  const byCat={};const byOffice={};
-  CASES.forEach(c=>{byStatus[c.status]=(byStatus[c.status]||0)+1;byCat[c.category]=(byCat[c.category]||0)+1;byOffice[c.office]=(byOffice[c.office]||0)+1;});
-  const hiOpen=CASES.filter(c=>c.priority==='High'&&c.status==='open').length;
+// ═══════════════════════════════════════════════════
+function renderAnalytics() {
+  const bs={open:0,'in-progress':0,closed:0,pending:0};
+  const bc={},bo={};
+  CASES.forEach(c=>{bs[c.status]=(bs[c.status]||0)+1;bc[c.category]=(bc[c.category]||0)+1;bo[c.office]=(bo[c.office]||0)+1;});
   document.getElementById('pageArea').innerHTML=`
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px">
-    <div class="tgrp"><button class="tgb active">6M</button><button class="tgb">1Y</button><button class="tgb">All</button></div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <span style="font-size:.8rem;display:flex;align-items:center;gap:5px"><span class="live-dot"></span>Real-time updates</span>
-      <button class="eb" onclick="expAnalyticsPDF()">📊 Export Report</button>
-    </div>
+    <span style="font-size:.82rem;display:flex;align-items:center;gap:5px;color:var(--green)"><span class="live-dot"></span>Live Firebase Data — updates in real-time</span>
+    <button class="eb" onclick="expAnalyticsPDF()">📊 Export PDF Report</button>
   </div>
   <div class="stats-grid" style="margin-bottom:18px">
-    <div class="sc cr"><div class="si">📉</div><div><div class="sl">Avg Resolution</div><div class="sv">4.2d</div><div class="ss">↓ 0.8d vs last month</div></div></div>
-    <div class="sc cg"><div class="si">⭐</div><div><div class="sl">Resolution Rate</div><div class="sv">91%</div><div class="ss">↑ 3% this month</div></div></div>
-    <div class="sc cb"><div class="si">🏢</div><div><div class="sl">Active Offices</div><div class="sv">5</div><div class="ss">All reporting</div></div></div>
-    <div class="sc ca"><div class="si">⚠️</div><div><div class="sl">High Priority Open</div><div class="sv">${hiOpen}</div><div class="ss">Immediate action needed</div></div></div>
+    <div class="sc cr"><div class="si">📋</div><div><div class="sl">Total Cases</div><div class="sv">${CASES.length}</div></div></div>
+    <div class="sc cg"><div class="si">✅</div><div><div class="sl">Closed</div><div class="sv">${bs.closed}</div></div></div>
+    <div class="sc cb"><div class="si">🔄</div><div><div class="sl">In Progress</div><div class="sv">${bs['in-progress']}</div></div></div>
+    <div class="sc ca"><div class="si">⚠️</div><div><div class="sl">High Priority Open</div><div class="sv">${CASES.filter(c=>c.priority==='High'&&c.status==='open').length}</div></div></div>
   </div>
   <div class="cgrid2">
-    <div class="card"><div class="card-hdr"><div class="card-title">Case Trend</div></div><div class="cw"><canvas id="aC1"></canvas></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Case Trend (12 months)</div></div><div class="cw"><canvas id="aC1"></canvas></div></div>
     <div class="card"><div class="card-hdr"><div class="card-title">Status Distribution</div></div><div class="cw"><canvas id="aC2"></canvas></div></div>
   </div>
-  <div class="card" style="margin-top:18px"><div class="card-hdr"><div class="card-title">Cases by Office (Stacked)</div></div><div class="cw" style="height:270px"><canvas id="aC3"></canvas></div></div>
+  <div class="card" style="margin-top:18px"><div class="card-hdr"><div class="card-title">Cases by Office</div></div><div class="cw" style="height:260px"><canvas id="aC3"></canvas></div></div>
   <div class="card" style="margin-top:18px"><div class="card-hdr"><div class="card-title">Issues by Category</div></div><div class="cw"><canvas id="aC4"></canvas></div></div>`;
   Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
-  acharts.t=new Chart(document.getElementById('aC1'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],datasets:[{label:'New',data:[4,6,5,9,12,7,8,11,6,9,5,8],borderColor:'#e60012',backgroundColor:'rgba(230,0,18,.1)',tension:.4,fill:true,pointBackgroundColor:'#e60012'},{label:'Closed',data:[3,4,5,7,10,6,7,9,5,8,4,7],borderColor:'#00a651',backgroundColor:'rgba(0,166,81,.08)',tension:.4,fill:true,pointBackgroundColor:'#00a651'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
-  const se=Object.entries(byStatus);
-  acharts.s=new Chart(document.getElementById('aC2'),{type:'pie',data:{labels:se.map(e=>e[0]),datasets:[{data:se.map(e=>e[1]),backgroundColor:['#e60012','#f59e0b','#00a651','#2563eb'],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}});
-  acharts.o=new Chart(document.getElementById('aC3'),{type:'bar',data:{labels:['Bangkok HQ','Chiang Mai','Phuket','Pattaya','Hat Yai'],datasets:[{label:'Open',data:[5,3,2,1,1],backgroundColor:'#e60012',borderRadius:4},{label:'In Progress',data:[7,4,3,2,2],backgroundColor:'#f59e0b',borderRadius:4},{label:'Closed',data:[8,3,4,1,1],backgroundColor:'#00a651',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#f0f0f0'}}}}});
-  const ce=Object.entries(byCat);
-  acharts.c=new Chart(document.getElementById('aC4'),{type:'bar',data:{labels:ce.map(e=>e[0]),datasets:[{label:'Cases',data:ce.map(e=>e[1]),backgroundColor:'#111',borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'}},y:{grid:{display:false}}}}});
-  // live tick
-  const lt=setInterval(()=>{if(!acharts.t||!document.getElementById('aC1')){clearInterval(lt);return;}acharts.t.data.datasets[0].data=acharts.t.data.datasets[0].data.map(v=>Math.max(0,v+Math.floor(Math.random()*3-1)));acharts.t.update('none');},4000);
+  const now=new Date();const last12=[];
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);last12.push({label:d.toLocaleString('default',{month:'short'}),key:d.toISOString().slice(0,7)});}
+  const mm={},mm2={};
+  CASES.forEach(c=>{const m=(c.createdAt||'').slice(0,7);if(m){mm[m]=(mm[m]||0)+1;if(c.status==='closed')mm2[m]=(mm2[m]||0)+1;}});
+  new Chart(document.getElementById('aC1'),{type:'line',data:{labels:last12.map(x=>x.label),datasets:[{label:'New',data:last12.map(x=>mm[x.key]||0),borderColor:'#e60012',backgroundColor:'rgba(230,0,18,.1)',tension:.4,fill:true,pointBackgroundColor:'#e60012'},{label:'Closed',data:last12.map(x=>mm2[x.key]||0),borderColor:'#00a651',backgroundColor:'rgba(0,166,81,.08)',tension:.4,fill:true,pointBackgroundColor:'#00a651'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'}},x:{grid:{display:false}}}}});
+  const se=Object.entries(bs).filter(e=>e[1]>0);
+  if(se.length) new Chart(document.getElementById('aC2'),{type:'pie',data:{labels:se.map(e=>e[0]),datasets:[{data:se.map(e=>e[1]),backgroundColor:['#e60012','#f59e0b','#00a651','#2563eb'],borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}});
+  const oe=Object.entries(bo);
+  if(oe.length) new Chart(document.getElementById('aC3'),{type:'bar',data:{labels:oe.map(e=>e[0].replace(' Office','').replace(' Head','')),datasets:[{label:'Cases',data:oe.map(e=>e[1]),backgroundColor:'#e60012',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,grid:{color:'#f0f0f0'}}}}});
+  const ce=Object.entries(bc);
+  if(ce.length) new Chart(document.getElementById('aC4'),{type:'bar',data:{labels:ce.map(e=>e[0]),datasets:[{label:'Cases',data:ce.map(e=>e[1]),backgroundColor:'#111',borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'}},y:{grid:{display:false}}}}});
 }
-function expAnalyticsPDF(){toast('Generating analytics PDF report…','i');setTimeout(()=>toast('Analytics report downloaded!','s'),1200);}
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  MAP
-// ══════════════════════════════════════
-function renderMap(){
+// ═══════════════════════════════════════════════════
+function renderMap() {
   const loc=CASES.filter(c=>c.lat&&c.lng);
   document.getElementById('pageArea').innerHTML=`
   <div class="card" style="margin-bottom:18px">
     <div class="card-hdr"><div class="card-title">Site Complaint Map</div><button class="btn btn-r btn-sm" onclick="openAddLoc()">＋ Add Location</button></div>
-    <div class="map-ph" style="min-height:340px">
-      <div class="mpl">
-        ${loc.map((c,i)=>`<div class="mp" style="top:${20+i*14}%;left:${25+i*11}%;animation-delay:${i*.3}s" title="${c.customer||c.id}" onclick="openDetail('${c.id}')">📍</div>`).join('')}
-      </div>
-      <span style="position:relative;z-index:1;text-align:center;padding:20px">🗺️ Add your Google Maps API key in<br><a style="color:#e60012;cursor:pointer" onclick="go('adminDesign')">Admin → Design System</a> to enable interactive map</span>
-    </div>
-    <p style="font-size:.77rem;color:var(--g600);margin-top:10px">💡 Free Google Maps API key available at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--red)">console.cloud.google.com</a> (generous free tier)</p>
+    ${SETTINGS.googleMapsKey
+      ?`<div id="gmap" style="width:100%;height:380px;border-radius:var(--r2);overflow:hidden"></div>`
+      :`<div class="map-ph"><div class="mpl">${loc.map((c,i)=>`<div class="mp" style="top:${20+i*14}%;left:${25+i*11}%;animation-delay:${i*.3}s" onclick="openDetail('${c.id}')">📍</div>`).join('')}</div><span style="position:relative;z-index:1;text-align:center;padding:20px">🗺️ Add your Google Maps API key in<br><a style="color:#e60012;cursor:pointer" onclick="go('adminDesign')">Admin → Design System</a> to activate</span></div>
+        <p style="font-size:.77rem;color:var(--g600);margin-top:10px">💡 Free at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--red)">console.cloud.google.com</a></p>`}
   </div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">Registered Complaint Locations (${loc.length})</div></div>
+    <div class="card-hdr"><div class="card-title">Registered Locations (${loc.length})</div></div>
     <div class="tw"><table><thead><tr><th>Case #</th><th>Customer</th><th>Address</th><th>Coordinates</th><th>Status</th><th></th></tr></thead>
     <tbody>${loc.map(c=>`<tr>
       <td><a class="tl" onclick="openDetail('${c.id}')">${c.id}</a></td>
-      <td>${c.customer||'—'}</td>
-      <td style="font-size:.79rem;max-width:200px">${c.address||'—'}</td>
+      <td>${c.customer||'—'}</td><td style="font-size:.79rem;max-width:200px">${c.address||'—'}</td>
       <td style="font-size:.77rem;font-family:monospace">${c.lat?.toFixed(4)}, ${c.lng?.toFixed(4)}</td>
       <td>${statusBadge(c.status)}</td>
       <td><button class="btn btn-o btn-sm" onclick="openDetail('${c.id}')">View</button></td>
     </tr>`).join('')}</tbody></table></div>
   </div>`;
+  if(SETTINGS.googleMapsKey) initMap(SETTINGS.googleMapsKey, loc);
+}
+function initMap(key,cases){
+  if(window._gmapLoaded){_buildMap(cases);return;}
+  window._mapCases=cases;
+  window._buildMap=function(cases){const map=new google.maps.Map(document.getElementById('gmap'),{center:{lat:13.75,lng:100.52},zoom:6});cases.forEach(c=>{const m=new google.maps.Marker({position:{lat:c.lat,lng:c.lng},map,title:c.customer||c.id});m.addListener('click',()=>openDetail(c.id));});};
+  const s=document.createElement('script');s.src=`https://maps.googleapis.com/maps/api/js?key=${key}&callback=_gmapReady`;
+  window._gmapReady=()=>{window._gmapLoaded=true;window._buildMap(window._mapCases);};
+  document.head.appendChild(s);
 }
 function openAddLoc(){
-  openModal('＋ Add Site Location',`
-  <div class="fgroup"><label>Case # (link to existing)</label><select class="finput" id="al0">${CASES.map(c=>`<option value="${c.id}">${c.id} — ${c.title.slice(0,40)}</option>`).join('')}</select></div>
-  <div class="fgroup"><label>Customer Name</label><input class="finput" id="al1" placeholder="Customer / Project name"></div>
-  <div class="fgroup"><label>Full Address</label><input class="finput" id="al2" placeholder="Street, City, Province, PostCode"></div>
+  openModal('＋ Add Location',`
+  <div class="fgroup"><label>Link to Case</label><select class="finput" id="al0">${CASES.map(c=>`<option value="${c.id}">${c.id} — ${c.title?.slice(0,40)}</option>`).join('')}</select></div>
+  <div class="fgroup"><label>Customer Name</label><input class="finput" id="al1"></div>
+  <div class="fgroup"><label>Full Address</label><input class="finput" id="al2"></div>
   <div class="fg"><div class="fgroup"><label>Latitude</label><input class="finput" id="al3" placeholder="13.7467"></div><div class="fgroup"><label>Longitude</label><input class="finput" id="al4" placeholder="100.5390"></div></div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveLocation()">Save &amp; Pin to Map</button>`);
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveLocation()">Save &amp; Pin</button>`);
 }
-function saveLocation(){
+async function saveLocation(){
   const cid=document.getElementById('al0')?.value;
-  const lat=parseFloat(document.getElementById('al3')?.value);
-  const lng=parseFloat(document.getElementById('al4')?.value);
-  const addr=document.getElementById('al2')?.value;
-  const customer=document.getElementById('al1')?.value;
-  if(cid){const c=CASES.find(x=>x.id===cid);if(c){if(!isNaN(lat))c.lat=lat;if(!isNaN(lng))c.lng=lng;if(addr)c.address=addr;if(customer)c.customer=customer;}}
-  closeModal();toast('Location saved and pinned to map!','s');renderMap();
+  const u={};const lat=parseFloat(document.getElementById('al3')?.value);const lng=parseFloat(document.getElementById('al4')?.value);
+  const addr=document.getElementById('al2')?.value;const cust=document.getElementById('al1')?.value;
+  if(!isNaN(lat))u.lat=lat;if(!isNaN(lng))u.lng=lng;if(addr)u.address=addr;if(cust)u.customer=cust;
+  if(cid&&Object.keys(u).length) await db.collection('cases').doc(cid).update(u);
+  closeModal();toast('Location saved to Firebase!','s');renderMap();
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  GROUPS
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function renderGroups(){
   document.getElementById('pageArea').innerHTML=`
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
@@ -1015,64 +1119,51 @@ function renderGroups(){
   </div>
   <div class="gg">${GROUPS.map(g=>`
     <div class="gc">
-      <div class="gi">${g.icon}</div>
-      <div class="ginfo">
-        <div class="gname">${g.name}</div>
-        <div class="gmeta">${g.lastMsg} · ${g.lastTs}</div>
-        <div class="gavas">${g.members.slice(0,4).map(m=>`<div class="ava" style="background:hsl(${m.charCodeAt(0)*30},55%,42%)">${m}</div>`).join('')}${g.memberCount>4?`<div class="ava" style="background:var(--g600)">+${g.memberCount-4}</div>`:''}</div>
+      <div class="gi">${g.icon||'💬'}</div>
+      <div class="ginfo"><div class="gname">${g.name}</div><div class="gmeta">${g.lastMsg||''} · ${g.lastTs||''}</div>
+        <div class="gavas">${(g.members||[]).slice(0,4).map(m=>`<div class="ava" style="background:hsl(${(m||'A').charCodeAt(0)*30},55%,42%)">${m}</div>`).join('')}</div>
       </div>
-      <button class="btn btn-o btn-sm" onclick="openGroupChat('${g.id}','${g.name}','${g.icon}')">Open</button>
+      <button class="btn btn-o btn-sm" onclick="openGroupChat('${g.id}','${g.name}','${g.icon||'💬'}')">Open</button>
     </div>`).join('')}
   </div>`;
 }
 function openGroupChat(id,name,icon){
-  const msgs=[
-    {own:false,by:'Sub Admin',ts:'10:02',msg:'Good morning! New case QM-2024-006 assigned to Chiang Mai.'},
-    {own:true, by:'You',      ts:'10:15',msg:'Acknowledged. Will dispatch engineer today.'},
-    {own:false,by:'Sub Admin',ts:'10:17',msg:'Great. Please update the case status when done.'}
-  ];
-  const chatHTML=msgs.map(m=>`<div class="cm ${m.own?'own':'oth'}"><div class="cm-hdr" ${m.own?'style="justify-content:flex-end"':''}><span>${m.by}</span><span>${m.ts}</span></div><div class="cb">${m.msg}</div></div>`).join('');
   openModal(`${icon} ${name}`,`
-  <div style="display:flex;gap:8px;margin-bottom:14px">
-    <button class="btn btn-o btn-sm" onclick="toast('Add member: link to user list in production','i')">＋ Add Member</button>
-    <button class="btn btn-g btn-sm" onclick="toast('Removed from group','i')">Leave Group</button>
-  </div>
+  <div style="margin-bottom:12px"><button class="btn btn-o btn-sm" onclick="toast('Add member by email in production','i')">＋ Add Member</button></div>
   <div class="chat-box">
-    <div class="chat-msgs" id="gChat">${chatHTML}</div>
+    <div class="chat-msgs" id="gChat"><p style="text-align:center;color:var(--g400);font-size:.83rem;padding:20px">Start the conversation!</p></div>
     <div class="ci-bar">
-      <button class="ca2" onclick="toast('Attach file in Firebase production build','i')">📎</button>
-      <input class="ct" id="gIn" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendGroupMsg('${name}')">
-      <button class="cs" onclick="sendGroupMsg('${name}')">➤</button>
+      <input class="ct" id="gIn" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendGroupMsg('${id}')">
+      <button class="cs" onclick="sendGroupMsg('${id}')">➤</button>
     </div>
   </div>`,`<button class="btn btn-o" onclick="closeModal()">Close</button>`);
-  setTimeout(()=>{const m=document.getElementById('gChat');if(m)m.scrollTop=m.scrollHeight;},60);
 }
-function sendGroupMsg(name){
+async function sendGroupMsg(gid){
   const inp=document.getElementById('gIn');if(!inp?.value.trim())return;
-  const ts=new Date().toTimeString().slice(0,5);
+  const entry={by:CU.firstName+' '+CU.lastName,email:CU.email,msg:inp.value.trim(),ts:nowTs()};
+  await db.collection('groups').doc(gid).update({lastMsg:entry.msg,lastTs:'just now'});
   const msgs=document.getElementById('gChat');
   const el=document.createElement('div');el.className='cm own';
-  el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>You</span><span>${ts}</span></div><div class="cb">${inp.value}</div>`;
+  el.innerHTML=`<div class="cm-hdr" style="justify-content:flex-end"><span>You</span><span>${entry.ts}</span></div><div class="cb">${entry.msg}</div>`;
   msgs.appendChild(el);msgs.scrollTop=msgs.scrollHeight;inp.value='';
 }
 function openCreateGroup(){
   openModal('＋ Create Chat Group',`
   <div class="fgroup"><label>Group Name *</label><input class="finput" id="cg1" placeholder="e.g. Pattaya QC Team"></div>
-  <div class="fgroup"><label>Icon</label><select class="finput" id="cg2"><option>🏢</option><option>⚙️</option><option>📢</option><option>🔧</option><option>🏔️</option><option>🌴</option><option>🔬</option></select></div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="submitGroup()">Create Group</button>`);
+  <div class="fgroup"><label>Icon</label><select class="finput" id="cg2"><option>🏢</option><option>⚙️</option><option>📢</option><option>🔧</option><option>🏔️</option><option>🌴</option></select></div>`,
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="submitGroup()">Create &amp; Save</button>`);
 }
-function submitGroup(){
-  const name=document.getElementById('cg1')?.value.trim();
-  const icon=document.getElementById('cg2')?.value;
-  if(!name){toast('Please enter a group name','e');return;}
-  GROUPS.push({id:'g'+Date.now(),name,icon,members:[CU.initials],memberCount:1,lastMsg:'Group created',lastTs:'just now'});
-  closeModal();toast('Group "'+name+'" created!','s');renderGroups();
+async function submitGroup(){
+  const name=document.getElementById('cg1')?.value.trim();const icon=document.getElementById('cg2')?.value;
+  if(!name){toast('Enter a group name','e');return;}
+  const ref=await db.collection('groups').add({name,icon,members:[CU.initials||'?'],memberCount:1,lastMsg:'Group created',lastTs:'just now',createdAt:TS()});
+  GROUPS.push({id:ref.id,name,icon,members:[],memberCount:1,lastMsg:'Group created',lastTs:'just now'});
+  closeModal();toast('Group saved to Firebase!','s');renderGroups();
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  PROFILE
-// ══════════════════════════════════════
-let profileAvaData='';
+// ═══════════════════════════════════════════════════
 function renderProfile(){
   const init=CU.initials||(CU.firstName[0]+CU.lastName[0]).toUpperCase();
   document.getElementById('pageArea').innerHTML=`
@@ -1085,7 +1176,8 @@ function renderProfile(){
       <div>
         <div style="font-family:var(--tf);font-size:1.4rem;font-weight:700">${CU.firstName} ${CU.lastName}</div>
         <div style="color:var(--g600);font-size:.87rem;margin-top:3px">${CU.role==='admin'?'Administrator':CU.role==='subadmin'?'Sub-Administrator':'Sales User'} · ${CU.office}</div>
-        <button class="btn btn-o btn-sm" style="margin-top:9px" onclick="document.getElementById('avUp').click()">📷 Change Photo</button>
+        <span style="display:inline-flex;align-items:center;gap:4px;font-size:.75rem;color:var(--green);margin-top:5px;background:#e8f8f0;padding:2px 10px;border-radius:99px">🔥 Firebase Connected</span>
+        <br><button class="btn btn-o btn-sm" style="margin-top:9px" onclick="document.getElementById('avUp').click()">📷 Change Photo</button>
       </div>
     </div>
     <div class="itabs">
@@ -1097,30 +1189,24 @@ function renderProfile(){
       <div class="fg">
         <div class="fgroup"><label>First Name</label><input class="finput" id="pi1" value="${CU.firstName}"></div>
         <div class="fgroup"><label>Last Name</label><input class="finput" id="pi2" value="${CU.lastName}"></div>
-        <div class="fgroup"><label>Email</label><input class="finput" type="email" id="pi3" value="${CU.email}"></div>
+        <div class="fgroup"><label>Email</label><input class="finput" value="${CU.email}" readonly style="background:var(--g100)"></div>
         <div class="fgroup"><label>Contact Number</label><input class="finput" id="pi4" value="${CU.phone||''}"></div>
-        <div class="fgroup ff"><label>Sales Office</label><select class="finput" id="pi5">
-          ${['Bangkok Head Office','Chiang Mai Office','Phuket Office','Pattaya Office','Hat Yai Office'].map(o=>`<option ${CU.office===o?'selected':''}>${o}</option>`).join('')}
-        </select></div>
+        <div class="fgroup ff"><label>Sales Office</label><select class="finput" id="pi5">${['Bangkok Head Office','Chiang Mai Office','Phuket Office','Pattaya Office','Hat Yai Office'].map(o=>`<option ${CU.office===o?'selected':''}>${o}</option>`).join('')}</select></div>
       </div>
-      <button class="btn btn-r" onclick="saveProfile()">Save Changes</button>
+      <button class="btn btn-r" onclick="saveProfile()">💾 Save to Firebase</button>
     </div>
     <div data-pane="security" class="hidden">
       <div class="fg">
-        <div class="fgroup"><label>Current Password</label><input class="finput" type="password" placeholder="••••••••"></div>
-        <div class="fgroup"><label>New Password</label><input class="finput" type="password" placeholder="••••••••"></div>
-        <div class="fgroup ff"><label>Confirm New Password</label><input class="finput" type="password" placeholder="••••••••"></div>
+        <div class="fgroup"><label>New Password</label><input class="finput" type="password" id="pw2" placeholder="••••••••"></div>
+        <div class="fgroup ff"><label>Confirm Password</label><input class="finput" type="password" id="pw3" placeholder="••••••••"></div>
       </div>
-      <button class="btn btn-r" onclick="toast('Password changed!','s')">Update Password</button>
+      <button class="btn btn-r" onclick="changePw()">Update Password</button>
     </div>
     <div data-pane="notifs" class="hidden">
       <div style="display:flex;flex-direction:column;gap:14px">
-        ${[['New case registration','checked'],['Case status update','checked'],['Case modified',''],['Part return added','checked'],['Registration approval','checked']].map(([l,c])=>`
-        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.88rem">
-          <input type="checkbox" ${c}> Email: ${l}
-        </label>`).join('')}
+        ${[['New case registration','checked'],['Case status update','checked'],['Case modified',''],['Part return added','checked'],['Registration approval','checked']].map(([l,c])=>`<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.88rem"><input type="checkbox" ${c}> Email: ${l}</label>`).join('')}
       </div>
-      <button class="btn btn-r" style="margin-top:18px" onclick="toast('Notification preferences saved!','s')">Save Preferences</button>
+      <button class="btn btn-r" style="margin-top:18px" onclick="toast('Preferences saved!','s')">Save Preferences</button>
     </div>
   </div>`;
 }
@@ -1129,33 +1215,38 @@ function switchPTab(btn){
   card.querySelectorAll('.itab').forEach(b=>b.classList.toggle('active',b===btn));
   card.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hidden',p.dataset.pane!==btn.dataset.tab));
 }
-function saveProfile(){
+async function saveProfile(){
   CU.firstName=document.getElementById('pi1')?.value||CU.firstName;
   CU.lastName=document.getElementById('pi2')?.value||CU.lastName;
   CU.phone=document.getElementById('pi4')?.value||CU.phone;
   CU.office=document.getElementById('pi5')?.value||CU.office;
+  await db.collection('users').doc(CU.uid).update({firstName:CU.firstName,lastName:CU.lastName,phone:CU.phone,office:CU.office});
   document.getElementById('sbName').textContent=CU.firstName+' '+CU.lastName;
   const init=(CU.firstName[0]+CU.lastName[0]).toUpperCase();
-  document.getElementById('sbAva').textContent=init;
-  document.getElementById('hAva').textContent=init;
-  toast('Profile updated!','s');
+  document.getElementById('sbAva').textContent=init;document.getElementById('hAva').textContent=init;
+  toast('Profile saved to Firebase! ✅','s');
+}
+async function changePw(){
+  const np=document.getElementById('pw2')?.value,cp=document.getElementById('pw3')?.value;
+  if(!np||np.length<8){toast('Password min 8 characters','e');return;}
+  if(np!==cp){toast('Passwords do not match','e');return;}
+  try{await fbAuth.currentUser.updatePassword(np);toast('Password changed!','s');}catch(e){toast('Error: '+e.message,'e');}
 }
 function uploadAv(input){
   if(!input.files[0])return;
   const r=new FileReader();
-  r.onload=e=>{
+  r.onload=async e=>{
     profileAvaData=e.target.result;
-    const el=document.getElementById('profAva');
-    if(el)el.innerHTML=`<img src="${profileAvaData}" alt="Avatar">`;
+    const el=document.getElementById('profAva');if(el)el.innerHTML=`<img src="${profileAvaData}" alt="Avatar">`;
     ['sbAva','hAva'].forEach(id=>{const a=document.getElementById(id);if(a)a.innerHTML=`<img src="${profileAvaData}" alt="Avatar">`;});
-    toast('Profile photo updated!','s');
+    toast('Photo updated!','s');
   };
   r.readAsDataURL(input.files[0]);
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  ADMIN – USERS
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 let adminTab='pending';
 function renderAdminUsers(){
   document.getElementById('pageArea').innerHTML=`
@@ -1166,114 +1257,108 @@ function renderAdminUsers(){
   <div id="adTabContent"></div>`;
   drawAdTab();
 }
-function switchAdTab(tab,btn){
-  adminTab=tab;
-  document.querySelectorAll('#pageArea .itab').forEach(b=>b.classList.toggle('active',b===btn));
-  drawAdTab();
-}
+function switchAdTab(tab,btn){adminTab=tab;document.querySelectorAll('#pageArea .itab').forEach(b=>b.classList.toggle('active',b===btn));drawAdTab();}
 function drawAdTab(){
   const el=document.getElementById('adTabContent');if(!el)return;
   if(adminTab==='pending'){
-    if(!PENDING.length){el.innerHTML='<div class="card"><p style="padding:20px;color:var(--g600)">No pending registrations.</p></div>';return;}
+    if(!PENDING.length){el.innerHTML='<div class="card"><p style="padding:20px;color:var(--g600)">No pending registrations ✅</p></div>';return;}
     el.innerHTML=`<div class="card"><div class="card-hdr"><div class="card-title">Pending Registrations (${PENDING.length})</div></div>
     <div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Office</th><th>Contact</th><th>Registered</th><th>Actions</th></tr></thead>
     <tbody>${PENDING.map(u=>`<tr>
-      <td>${u.firstName} ${u.lastName}</td>
-      <td style="font-size:.82rem">${u.email}</td>
-      <td style="font-size:.82rem">${u.office}</td>
-      <td style="font-size:.82rem">${u.phone}</td>
+      <td>${u.firstName} ${u.lastName}</td><td style="font-size:.82rem">${u.email}</td>
+      <td style="font-size:.82rem">${u.office}</td><td style="font-size:.82rem">${u.phone}</td>
       <td style="font-size:.82rem">${fmtDate(u.registeredAt)}</td>
-      <td style="white-space:nowrap"><button class="bapp" onclick="approveUser('${u.id}')">✓ Approve</button> <button class="brej" onclick="rejectUser('${u.id}')">✗ Reject</button></td>
+      <td style="white-space:nowrap"><button class="bapp" onclick="approveUser('${u.id}','${u.email}')">✓ Approve</button> <button class="brej" onclick="rejectUser('${u.id}')">✗ Reject</button></td>
     </tr>`).join('')}</tbody></table></div></div>`;
   } else {
-    el.innerHTML=`<div class="card"><div class="card-hdr"><div class="card-title">All Members (${ALLUSERS.length})</div><button class="btn btn-r btn-sm" onclick="toast('Add user form: connect to Firebase for production','i')">＋ Add User</button></div>
+    el.innerHTML=`<div class="card"><div class="card-hdr"><div class="card-title">All Members (${ALLUSERS.length})</div></div>
     <div class="tw"><table><thead><tr><th>User</th><th>Role</th><th>Office</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>${ALLUSERS.map(u=>`<tr>
-      <td><div style="display:flex;align-items:center;gap:8px"><div class="ava btn-sm" style="width:30px;height:30px;font-size:.76rem">${u.initials}</div>${u.firstName} ${u.lastName}</div></td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="ava" style="width:30px;height:30px;font-size:.76rem">${u.initials||'?'}</div>${u.firstName} ${u.lastName}</div></td>
       <td><span class="rbadge ${u.role==='admin'?'admin':u.role==='subadmin'?'sub':'user'}">${u.role==='admin'?'Admin':u.role==='subadmin'?'Sub-Admin':'Sales'}</span></td>
-      <td style="font-size:.82rem">${u.office}</td>
-      <td style="font-size:.82rem">${u.email}</td>
+      <td style="font-size:.82rem">${u.office}</td><td style="font-size:.82rem">${u.email}</td>
       <td><span class="sb2 closed">Active</span></td>
       <td style="white-space:nowrap">
-        <button class="btn btn-o btn-sm" onclick="toast('Edit user','i')">Edit</button>
-        <button class="brej btn-sm" onclick="toast('Password reset email sent to '+${JSON.stringify(u.email)},'i')">Reset PW</button>
-        ${u.role!=='admin'?`<button class="btn btn-g btn-sm" onclick="changeRole('${u.email}')">Role</button>`:''}
+        <button class="brej btn-sm" onclick="resetPW('${u.email}')">Reset PW</button>
+        ${u.role!=='admin'?`<button class="btn btn-g btn-sm" onclick="changeRole('${u.id}','${u.role}')">Role</button>`:''}
       </td>
     </tr>`).join('')}</tbody></table></div></div>`;
   }
 }
-function approveUser(id){PENDING=PENDING.filter(u=>u.id!==id);toast('User approved! Notification email sent.','s');renderAdminUsers();}
-function rejectUser(id){PENDING=PENDING.filter(u=>u.id!==id);toast('Registration rejected.','i');renderAdminUsers();}
-function changeRole(email){
-  openModal('Change Role — '+email,`
-  <div class="fgroup"><label>New Role</label><select class="finput" id="cr1"><option value="user">Sales User</option><option value="subadmin">Sub-Administrator</option><option value="admin">Administrator</option></select></div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveRole('${email}')">Save Role</button>`);
+async function approveUser(uid,email){
+  await db.collection('users').doc(uid).update({approved:true});
+  await db.collection('pending').doc(uid).delete();
+  PENDING=PENDING.filter(u=>u.id!==uid);
+  const pb=document.getElementById('sbPB');if(pb){pb.textContent=PENDING.length;pb.classList.toggle('show',PENDING.length>0);}
+  toast('User approved! ✅ They can now log in.','s');renderAdminUsers();
 }
-function saveRole(email){
+async function rejectUser(uid){
+  await db.collection('pending').doc(uid).delete();
+  PENDING=PENDING.filter(u=>u.id!==uid);
+  toast('Registration rejected.','i');renderAdminUsers();
+}
+async function resetPW(email){
+  await fbAuth.sendPasswordResetEmail(email);
+  toast('Password reset email sent to '+email,'s');
+}
+function changeRole(uid,cur){
+  openModal('Change Role',`<div class="fgroup"><label>New Role</label><select class="finput" id="cr1"><option value="user" ${cur==='user'?'selected':''}>Sales User</option><option value="subadmin" ${cur==='subadmin'?'selected':''}>Sub-Administrator</option><option value="admin" ${cur==='admin'?'selected':''}>Administrator</option></select></div>`,
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveRole('${uid}')">Save</button>`);
+}
+async function saveRole(uid){
   const role=document.getElementById('cr1')?.value;
-  const u=ALLUSERS.find(x=>x.email===email);if(u)u.role=role;
-  closeModal();toast('Role updated for '+email,'s');renderAdminUsers();
+  await db.collection('users').doc(uid).update({role});
+  const u=ALLUSERS.find(x=>x.id===uid);if(u)u.role=role;
+  closeModal();toast('Role updated in Firebase!','s');renderAdminUsers();
 }
 
-// ══════════════════════════════════════
-//  ADMIN – DESIGN SYSTEM
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
+//  ADMIN – DESIGN
+// ═══════════════════════════════════════════════════
 function renderAdminDesign(){
   document.getElementById('pageArea').innerHTML=`
   <div class="hero-banner">
     <div class="hbo"><button class="btn btn-o btn-sm" style="background:rgba(255,255,255,.9)" onclick="editHero()">✏️ Edit Banner</button></div>
-    <h2 id="heroBannerTxt">${SETTINGS.heroBanner}</h2>
-    <p id="heroSubTxt">${SETTINGS.heroSub}</p>
+    <h2>${SETTINGS.heroBanner}</h2><p>${SETTINGS.heroSub}</p>
   </div>
   <div class="cgrid2">
     <div class="card">
       <div class="card-title" style="margin-bottom:16px">Brand Colors</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px">
-        ${[['#e60012','Primary Red'],['#b3000e','Red Dark'],['#111111','Black'],['#f5f5f5','Light BG'],['#00a651','Success Green'],['#f59e0b','Warning Amber']].map(([c,n])=>`
-        <div>
-          <div class="cswatch" style="background:${c};border:${c==='#f5f5f5'?'1px solid #ddd':'none'}"><span>${c}</span></div>
-          <div style="font-size:.79rem;color:var(--g600);margin-top:5px">${n}</div>
-        </div>`).join('')}
+        ${[['#e60012','Primary Red'],['#b3000e','Red Dark'],['#111111','Black'],['#f5f5f5','Light BG'],['#00a651','Success'],['#f59e0b','Warning']].map(([c,n])=>`<div><div class="cswatch" style="background:${c};border:${c==='#f5f5f5'?'1px solid #ddd':'none'}"><span>${c}</span></div><div style="font-size:.79rem;color:var(--g600);margin-top:5px">${n}</div></div>`).join('')}
       </div>
     </div>
     <div class="card">
       <div class="card-title" style="margin-bottom:16px">System Settings</div>
-      <div class="fgroup"><label>Google Maps API Key</label><input class="finput" id="gMapKey" placeholder="AIzaSy…" value="${SETTINGS.googleMapsKey}"><p style="font-size:.73rem;color:var(--g600);margin-top:4px">Get free key at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--red)">console.cloud.google.com</a></p></div>
+      <div class="fgroup"><label>Google Maps API Key</label><input class="finput" id="gMapKey" value="${SETTINGS.googleMapsKey}" placeholder="AIzaSy…"><p style="font-size:.73rem;color:var(--g600);margin-top:4px">Free at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--red)">console.cloud.google.com</a></p></div>
       <div class="fgroup"><label>System Title</label><input class="finput" id="sTitle" value="${SETTINGS.systemTitle}"></div>
-      <div class="fgroup"><label>Notification Email (SMTP)</label><input class="finput" placeholder="smtp.gmail.com (configure in backend)"></div>
-      <button class="btn btn-r" onclick="saveSettings()">Save Settings</button>
-    </div>
-  </div>
-  <div class="card" style="margin-top:18px">
-    <div class="card-title" style="margin-bottom:16px">Typography</div>
-    <div style="display:flex;flex-wrap:wrap;gap:24px">
-      <div><div style="font-family:var(--tf);font-size:2.5rem;font-weight:700;line-height:1">H1 Heading</div><div style="font-size:.75rem;color:var(--g600);margin-top:4px">Rajdhani Bold 40px</div></div>
-      <div><div style="font-family:var(--tf);font-size:1.8rem;font-weight:700;line-height:1">H2 Heading</div><div style="font-size:.75rem;color:var(--g600);margin-top:4px">Rajdhani Bold 29px</div></div>
-      <div><div style="font-family:var(--tf);font-size:1.2rem;font-weight:600;line-height:1">H3 Heading</div><div style="font-size:.75rem;color:var(--g600);margin-top:4px">Rajdhani SemiBold 19px</div></div>
-      <div><div style="font-size:.9rem;line-height:1.6;max-width:300px">Body text in IBM Plex Sans. Clear and readable for data-heavy interfaces.</div><div style="font-size:.75rem;color:var(--g600);margin-top:4px">IBM Plex Sans Regular 14px</div></div>
+      <div style="padding:10px;background:#e8f8f0;border-radius:var(--r);font-size:.83rem;color:var(--green);margin-bottom:14px">🔥 Firebase connected — project: <b>me-qms</b> — all changes save permanently</div>
+      <button class="btn btn-r" onclick="saveSettings()">💾 Save Settings to Firebase</button>
     </div>
   </div>`;
 }
 function editHero(){
-  openModal('✏️ Edit Hero Banner',`
-  <div class="fgroup"><label>Banner Title</label><input class="finput" id="hb1" value="${SETTINGS.heroBanner}"></div>
+  openModal('✏️ Edit Banner',`
+  <div class="fgroup"><label>Title</label><input class="finput" id="hb1" value="${SETTINGS.heroBanner}"></div>
   <div class="fgroup"><label>Subtitle</label><input class="finput" id="hb2" value="${SETTINGS.heroSub}"></div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveHero()">Save Banner</button>`);
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveHero()">Save</button>`);
 }
-function saveHero(){
+async function saveHero(){
   SETTINGS.heroBanner=document.getElementById('hb1')?.value||SETTINGS.heroBanner;
   SETTINGS.heroSub=document.getElementById('hb2')?.value||SETTINGS.heroSub;
-  closeModal();toast('Banner updated!','s');renderAdminDesign();
+  await db.collection('settings').doc('global').set(SETTINGS,{merge:true});
+  closeModal();toast('Banner saved to Firebase!','s');renderAdminDesign();
 }
-function saveSettings(){
+async function saveSettings(){
   SETTINGS.googleMapsKey=document.getElementById('gMapKey')?.value||'';
   SETTINGS.systemTitle=document.getElementById('sTitle')?.value||SETTINGS.systemTitle;
-  toast('Settings saved!','s');
+  await db.collection('settings').doc('global').set(SETTINGS,{merge:true});
+  toast('Settings saved to Firebase! ✅','s');
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  ADMIN – CATEGORIES
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function renderAdminCats(){
   document.getElementById('pageArea').innerHTML=`
   <div class="card">
@@ -1284,216 +1369,118 @@ function renderAdminCats(){
 }
 function drawCatTable(){
   const el=document.getElementById('catTbl');if(!el)return;
-  el.innerHTML=`<table><thead><tr><th>#</th><th>Category Name</th><th>Description</th><th>Cases</th><th>Actions</th></tr></thead>
-  <tbody>${CATS.map((c,i)=>`<tr>
-    <td>${i+1}</td>
-    <td><b>${c.name}</b></td>
-    <td style="font-size:.82rem;color:var(--g600)">${c.desc}</td>
-    <td><span class="sb2 pending">${c.count}</span></td>
-    <td style="white-space:nowrap">
-      <button class="btn btn-o btn-sm" onclick="openEditCat('${c.id}')">Edit</button>
-      <button class="brej btn-sm" onclick="deleteCat('${c.id}')">Delete</button>
-    </td>
+  el.innerHTML=`<table><thead><tr><th>#</th><th>Category Name</th><th>Description</th><th>Actions</th></tr></thead>
+  <tbody>${CATS.map((c,i)=>`<tr><td>${i+1}</td><td><b>${c.name}</b></td><td style="font-size:.82rem;color:var(--g600)">${c.desc||''}</td>
+    <td style="white-space:nowrap"><button class="btn btn-o btn-sm" onclick="openEditCat('${c.id}')">Edit</button> <button class="brej btn-sm" onclick="deleteCat('${c.id}')">Delete</button></td>
   </tr>`).join('')}</tbody></table>`;
 }
 function openAddCat(){
-  openModal('＋ Add Issue Category',`
-  <div class="fgroup"><label>Category Name *</label><input class="finput" id="ac1" placeholder="e.g. Drainage Issue"></div>
+  openModal('＋ Add Category',`
+  <div class="fgroup"><label>Name *</label><input class="finput" id="ac1" placeholder="e.g. Drainage Issue"></div>
   <div class="fgroup"><label>Description</label><input class="finput" id="ac2" placeholder="Short description"></div>`,
-  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="submitCat()">Add Category</button>`);
+  `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="submitCat()">Save to Firebase</button>`);
 }
-function submitCat(){
+async function submitCat(){
   const name=document.getElementById('ac1')?.value.trim();
-  if(!name){toast('Please enter a category name','e');return;}
-  CATS.push({id:'c'+Date.now(),name,desc:document.getElementById('ac2')?.value||'',count:0});
-  closeModal();toast('Category "'+name+'" added!','s');renderAdminCats();
+  if(!name){toast('Enter a name','e');return;}
+  const ref=await db.collection('categories').add({name,desc:document.getElementById('ac2')?.value||'',count:0});
+  CATS.push({id:ref.id,name,desc:document.getElementById('ac2')?.value||''});
+  closeModal();toast('Category saved!','s');renderAdminCats();
 }
 function openEditCat(id){
   const c=CATS.find(x=>x.id===id);if(!c)return;
-  openModal('✏️ Edit Category',`
+  openModal('✏️ Edit',`
   <div class="fgroup"><label>Name</label><input class="finput" id="ec1" value="${c.name}"></div>
-  <div class="fgroup"><label>Description</label><input class="finput" id="ec2" value="${c.desc}"></div>`,
+  <div class="fgroup"><label>Description</label><input class="finput" id="ec2" value="${c.desc||''}"></div>`,
   `<button class="btn btn-o" onclick="closeModal()">Cancel</button><button class="btn btn-r" onclick="saveEditCat('${id}')">Save</button>`);
 }
-function saveEditCat(id){
+async function saveEditCat(id){
   const c=CATS.find(x=>x.id===id);if(!c)return;
-  c.name=document.getElementById('ec1')?.value||c.name;
-  c.desc=document.getElementById('ec2')?.value||c.desc;
-  closeModal();toast('Category updated!','s');renderAdminCats();
+  c.name=document.getElementById('ec1')?.value||c.name;c.desc=document.getElementById('ec2')?.value||c.desc;
+  await db.collection('categories').doc(id).update({name:c.name,desc:c.desc});
+  closeModal();toast('Category saved!','s');renderAdminCats();
 }
-function deleteCat(id){
+async function deleteCat(id){
   if(!confirm('Delete this category?'))return;
-  CATS=CATS.filter(c=>c.id!==id);
-  toast('Category deleted','i');renderAdminCats();
+  await db.collection('categories').doc(id).delete();
+  CATS=CATS.filter(c=>c.id!==id);toast('Deleted','i');renderAdminCats();
 }
 
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 //  EXPORT
-// ══════════════════════════════════════
+// ═══════════════════════════════════════════════════
 function expXLS(){
   try{
-    const rows=filteredCases.map(c=>({
-      'Case #':c.id,'Title':c.title,'Office':c.office,'Category':c.category,'Model':c.model,'Serial':c.serial,
-      'Status':c.status,'Priority':c.priority,'Customer':c.customer||'','Address':c.address||'',
-      'Occurrence Date':c.occurrenceDate,'Complaint Date':c.complaintDate,'Registered':c.createdAt,'Description':c.description
-    }));
-    const ws=XLSX.utils.json_to_sheet(rows);
-    const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Quality Cases');
-    XLSX.writeFile(wb,'ME-QMS_Cases_'+today()+'.xlsx');
-    toast('Excel file downloaded!','s');
+    const rows=filteredCases.map(c=>({'Case #':c.id,'Title':c.title,'Office':c.office,'Category':c.category,'Model':c.model,'Serial':c.serial,'Status':c.status,'Priority':c.priority,'Customer':c.customer||'','Address':c.address||'','Occurrence Date':c.occurrenceDate,'Complaint Date':c.complaintDate,'Registered':c.createdAt,'Description':c.description}));
+    const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Cases');
+    XLSX.writeFile(wb,'ME-QMS_Cases_'+today()+'.xlsx');toast('Excel downloaded!','s');
   }catch(e){toast('Export failed: '+e.message,'e');}
 }
 function expCSV(){
-  const headers=['Case #','Title','Office','Category','Model','Serial','Status','Priority','Customer','Occurrence Date','Complaint Date','Registered'];
-  const rows=filteredCases.map(c=>[c.id,`"${c.title}"`,c.office,c.category,c.model,c.serial,c.status,c.priority,`"${c.customer||''}"`,c.occurrenceDate,c.complaintDate,c.createdAt]);
-  const csv=[headers.join(','),...rows.map(r=>r.join(','))].join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='ME-QMS_Cases_'+today()+'.csv';a.click();
-  toast('CSV downloaded!','s');
+  const h=['Case #','Title','Office','Category','Model','Serial','Status','Priority','Customer','Occurrence','Complaint','Registered'];
+  const rows=filteredCases.map(c=>[c.id,`"${(c.title||'').replace(/"/g,'""')}"`,c.office,c.category,c.model,c.serial,c.status,c.priority,`"${(c.customer||'').replace(/"/g,'""')}"`,c.occurrenceDate,c.complaintDate,c.createdAt]);
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='ME-QMS_'+today()+'.csv';a.click();toast('CSV downloaded!','s');
 }
 function expPDF(){
   try{
-    const {jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape'});
+    const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape'});
     doc.setFillColor(230,0,18);doc.rect(0,0,297,18,'F');
     doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont('helvetica','bold');
-    doc.text('Mitsubishi Electric – Quality Cases Report',10,12);
-    doc.setTextColor(0,0,0);doc.setFontSize(9);doc.setFont('helvetica','normal');
-    doc.text('Generated: '+new Date().toLocaleString(),10,24);
-    doc.autoTable({startY:28,head:[['Case #','Title','Office','Category','Status','Priority','Date']],body:filteredCases.map(c=>[c.id,c.title.slice(0,40),c.office.replace(' Office','').replace(' Head',''),c.category,c.status,c.priority,c.createdAt]),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[230,0,18],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[250,250,250]},margin:{top:28}});
-    doc.save('ME-QMS_Cases_'+today()+'.pdf');
-    toast('PDF downloaded!','s');
-  }catch(e){toast('PDF export failed: '+e.message,'e');}
+    doc.text('Mitsubishi Electric — Quality Cases Report',10,12);
+    doc.setTextColor(100,100,100);doc.setFontSize(8);doc.setFont('helvetica','normal');
+    doc.text('Generated: '+new Date().toLocaleString()+' | Total: '+filteredCases.length,10,24);
+    doc.autoTable({startY:28,head:[['Case #','Title','Office','Category','Status','Priority','Date']],body:filteredCases.map(c=>[c.id,c.title?.slice(0,35),c.office?.replace(' Office','').replace(' Head',''),c.category,c.status,c.priority,c.createdAt]),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[230,0,18],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[250,250,250]},margin:{top:28}});
+    doc.save('ME-QMS_Cases_'+today()+'.pdf');toast('PDF downloaded!','s');
+  }catch(e){toast('PDF failed: '+e.message,'e');}
 }
 function expAnalyticsPDF(){
   toast('Generating analytics PDF…','i');
   setTimeout(()=>{
     try{
-      const {jsPDF}=window.jspdf;const doc=new jsPDF();
-      doc.setFillColor(230,0,18);doc.rect(0,0,210,20,'F');
+      const{jsPDF}=window.jspdf;const doc=new jsPDF();
+      doc.setFillColor(230,0,18);doc.rect(0,0,210,22,'F');
       doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');
-      doc.text('Mitsubishi Electric – Analytics Report',10,14);
+      doc.text('Mitsubishi Electric — Analytics Report',10,15);
       doc.setTextColor(0,0,0);doc.setFontSize(10);doc.setFont('helvetica','normal');
-      doc.text('Generated: '+new Date().toLocaleString(),10,28);
-      doc.text('Total Cases: '+CASES.length,10,38);
-      const byStatus={open:0,'in-progress':0,closed:0,pending:0};CASES.forEach(c=>byStatus[c.status]=(byStatus[c.status]||0)+1);
-      doc.text('Open: '+byStatus.open+' | In Progress: '+byStatus['in-progress']+' | Closed: '+byStatus.closed+' | Pending: '+byStatus.pending,10,46);
-      const byCat={};CASES.forEach(c=>byCat[c.category]=(byCat[c.category]||0)+1);
-      doc.autoTable({startY:56,head:[['Category','Case Count']],body:Object.entries(byCat).map(e=>[e[0],e[1]]),headStyles:{fillColor:[230,0,18],textColor:255}});
-      doc.save('ME-QMS_Analytics_'+today()+'.pdf');
-      toast('Analytics PDF downloaded!','s');
-    }catch(e){toast('PDF export failed','e');}
+      doc.text('Generated: '+new Date().toLocaleString(),10,32);doc.text('Total Cases: '+CASES.length,10,42);
+      const bs={open:0,'in-progress':0,closed:0,pending:0};CASES.forEach(c=>bs[c.status]=(bs[c.status]||0)+1);
+      doc.text('Open: '+bs.open+' | In Progress: '+bs['in-progress']+' | Closed: '+bs.closed,10,50);
+      const bc={};CASES.forEach(c=>bc[c.category]=(bc[c.category]||0)+1);
+      doc.autoTable({startY:60,head:[['Category','Count']],body:Object.entries(bc).map(e=>[e[0],e[1]]),headStyles:{fillColor:[230,0,18],textColor:255}});
+      doc.save('ME-QMS_Analytics_'+today()+'.pdf');toast('Analytics PDF downloaded!','s');
+    }catch(e){toast('PDF failed','e');}
   },800);
 }
-// ══════════════════════════════════════
-//  BOOT
-// ══════════════════════════════════════
-window.addEventListener('load',()=>{
-  setTimeout(()=>{
-    document.getElementById('splash').classList.add('out');
-    setTimeout(()=>{
-      document.getElementById('splash').style.display='none';
-      document.getElementById('authScreen').classList.remove('hidden');
-    },700);
-  },2700);
-});// ═══════════════════════════════════════════════════════════════
-//  ME-QMS: EDIT & SAVE LOGIC (เพิ่มโดย Gemi)
-// ═══════════════════════════════════════════════════════════════
 
-// 1. ฟังก์ชันเปิดหน้าต่างแก้ไขและดึงข้อมูลเดิมมาโชว์
-function openEditModal(caseId) {
-    const caseData = CASES.find(c => c.id === caseId);
-    if (!caseData) return;
-
-    // นำข้อมูลเดิมไปใส่ในช่อง Input (ตรวจสอบ ID ให้ตรงกับ HTML ของคุณ)
-    const idField = document.getElementById('edit-id');
-    const titleField = document.getElementById('edit-title');
-    const statusField = document.getElementById('edit-status');
-
-    if (idField) idField.value = caseId;
-    if (titleField) titleField.value = caseData.title || '';
-    if (statusField) statusField.value = caseData.status || '';
-
-    // แสดง Modal แก้ไข
-    const modal = document.getElementById('editModal');
-    if (modal) modal.classList.remove('hidden');
-}
-
-// 2. ฟังก์ชันกดบันทึกเพื่อส่งข้อมูลไป Firebase
-async function handleSaveChanges() {
-    const id = document.getElementById('edit-id').value;
-    const title = document.getElementById('edit-title').value;
-    const status = document.getElementById('edit-status').value;
-
-    if (!id) return;
-
-    try {
-        // อัปเดตข้อมูลใน Firestore ไปที่คอลเลกชัน quality_reports
-        await db.collection('quality_reports').doc(id).update({
-            title: title,
-            status: status,
-            lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-            updatedBy: CU.email // เก็บชื่อคนแก้ไข
-        });
-
-        toast("บันทึกข้อมูลเข้าสู่ระบบ ME-QMS สำเร็จ!", "s");
-        
-        // ปิดหน้าต่างแก้ไข
-        const modal = document.getElementById('editModal');
-        if (modal) modal.classList.add('hidden');
-
-    } catch (error) {
-        console.error("Error saving:", error);
-        toast("ไม่สามารถบันทึกได้: " + error.message, "e");
-    }
-}
-</script>
-<script>
-  // 1. นำค่า Config ของคุณมาประกาศแบบตัวแปรปกติ
-  const firebaseConfig = {
-    apiKey: "AIzaSyDHzB2N6FRv-9T1SdmU8GYNbMKHQ1Qwi9s",
-    authDomain: "me-qms.firebaseapp.com",
-    projectId: "me-qms",
-    storageBucket: "me-qms.firebasestorage.app",
-    messagingSenderId: "757578048543",
-    appId: "1:757578048543:web:bf6a797472aa431e71e12a",
-    measurementId: "G-GYE76953J1"
-  };
-
-  // 2. เริ่มต้นการเชื่อมต่อ (Initialize)
-  // ตรวจสอบว่าถ้ายังไม่มีการเปิด App ให้ทำการ Initialize
-  if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-  }
-
-  // 3. สร้างตัวแปรสำหรับเรียกใช้ Database และ Auth
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-  
-  // (เลือกใส่) หากต้องการใช้ Analytics
-  const analytics = firebase.analytics();
-
-  // --- หลังจากนี้คุณสามารถเขียนฟังก์ชันบันทึกข้อมูลได้เลย ---
-  
-  // ตัวอย่างฟังก์ชัน Save Changes สำหรับ Profile
-  async function saveProfileChanges() {
-      const user = auth.currentUser;
-      if (!user) return toast("กรุณา Login ก่อนบันทึก", "e");
-
-      // ดึงข้อมูลจาก Input (อ้างอิงตาม ID ใน HTML ของคุณ)
-      const data = {
-          firstName: document.getElementById('rFirst').value,
-          lastName: document.getElementById('rLast').value,
-          phone: document.getElementById('rPhone').value,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      };
-
+// ═══════════════════════════════════════════════════
+//  BOOT — Firebase Auth State Listener
+// ═══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  fbAuth.onAuthStateChanged(async user => {
+    if (user) {
+      // Already logged in — restore session automatically
       try {
-          await db.collection('users').doc(user.uid).set(data, { merge: true });
-          toast("บันทึกข้อมูลเรียบร้อยแล้ว", "s");
-      } catch (error) {
-          console.error(error);
-          toast("เกิดข้อผิดพลาด: " + error.message, "e");
-      }
-  }
+        const snap = await db.collection('users').doc(user.uid).get();
+        if (snap.exists && snap.data().approved) {
+          CU = { uid: user.uid, email: user.email, ...snap.data() };
+          await loadAllData();
+          document.getElementById('splash').classList.add('out');
+          setTimeout(() => { document.getElementById('splash').style.display='none'; launchApp(); }, 700);
+          return;
+        }
+      } catch(e) { console.warn('Session restore error:', e); }
+    }
+    // Show login screen
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('out');
+      setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('authScreen').classList.remove('hidden');
+      }, 700);
+    }, 2400);
+  });
+});
 </script>
 </body>
 </html>
